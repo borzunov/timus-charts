@@ -28,7 +28,7 @@
             value = localStorage[key];
         
         if (value === undefined)
-            throw new Error("Storage doesn't contains this key");
+            throw new Error("Storage doesn't contain this key");
         return value;
     }
         
@@ -184,13 +184,13 @@
             add: "Add",
             addUsers: "Add users",
             del: "Delete",
-            hideChart: "Hide the chart",
+            hideChart: "Hide chart",
             judgeIDDoesntExists: "This user doesn't exists!",
             judgeIDNotEnoughOfAccepted: "The user must have at least two solved problems!",
             judgeIDIncorrectFormat: "Incorrect Judge ID format (there's no digits)!",
-            judgeIDIsAlreadyAdded: "This Judge ID is already added!",
+            judgeIDIsAlreadyAdded: "This Judge ID has already been added!",
             judgeIDLabel: "Judge ID or link:",
-            showChart: "Show the chart",
+            showChart: "Show chart",
             version: "version",
             wrongJudgeID: "There's no submits on this Judge ID",
         },
