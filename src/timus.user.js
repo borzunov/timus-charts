@@ -153,7 +153,7 @@
     margin-top: 15px;\
 }\
 \
-.chart_user_delete {\
+.chart_user_remove {\
     float: right;\
 }\
 \
@@ -455,7 +455,7 @@
     <td class="chart_user_judge_id">{% judge_id %}</td>\
     <td>{% name %}</td>';
     var TEMPLATE_USER_SEVERAL_LINES = '<td class="chart_user_problems_count">{% problems_count %}</td>\
-<td><a href="#" class="chart_user_delete">' + locale.del + '</a></td>';
+<td><a href="#" class="chart_user_remove">' + locale.del + '</a></td>';
     var TEMPLATE_USER_END = '</tr>';
 
     var TEMPLATE_CHART = '<div id="chart_place" style="display: none;">\
@@ -548,7 +548,7 @@
         if (severalLines) {
             for (i = 0; i < this.lines.length; i++) {
                 curLine = this.lines[i];
-                $('#' + curLine.rowID + ' .chart_user_delete').click(
+                $('#' + curLine.rowID + ' .chart_user_remove').click(
                     this.makeRemoveUserHandler(curLine.author.judgeID)
                 );
             }
