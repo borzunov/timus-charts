@@ -16,6 +16,7 @@
 // ==/UserScript==
 
 /* jshint multistr: true */
+/* jshint -W083 */
 
 (function () {
     /* Engine-dependent functions */
@@ -225,43 +226,49 @@
     // because it can be full or inaccessible
     Submit.problemsFromContests = {};
 
-    Submit.prototype.checkWhetherConsidered = function (callback) {
-        if (this.verdict !== 'Accepted') {
-            callback(false);
-            return;
-        }
-        if (this.space == 1) {
-            callback(true);
-            return;
-        }
+    Submit.prototype.getProblemID = function() {
+        return this.space + ',' + this.problemNo;
+    };
+
+    Submit.prototype.getCacheKey = function () {
+        return 'problem' + this.space + '_' + this.problemNo;
+    };
+
+    Submit.prototype.isConsidered = function () {
+        if (this.verdict !== 'Accepted')
+            return false;
+        if (this.space == 1)
+            return true;
 
         // Check whether the online-contest problem is
         // copied to the main archive
-        var problemID = this.space + ',' + this.problemNo;
-        var cacheKey = 'problem' + this.space + '_' + this.problemNo;
+        var problemID = this.getProblemID();
         var archiveNo;
         if (problemID in Submit.problemsFromContests) {
             archiveNo = Submit.problemsFromContests[problemID];
         } else {
             try {
-                archiveNo = getValue(cacheKey);
+                archiveNo = getValue(this.getCacheKey());
                 Submit.problemsFromContests[problemID] = archiveNo;
             } catch (err) {}
         }
         if (archiveNo !== undefined) {
-            if (archiveNo != "null") {
-                this.space = 1;
-                this.problemNo = archiveNo;
-                callback(true);
-            } else
-                callback(false);
-            return;
+            if (archiveNo == "null")
+                return false;
+            this.space = 1;
+            this.problemNo = archiveNo;
+            return true;
         }
+        return null;
+    };
 
+    Submit.prototype.queryWhetherConsidered = function (callback) {
         var address = 'http://acm.timus.ru/problem.aspx?space=' +
                 this.space + '&num=' + this.problemNo;
         var submit = this;
         $.get(address, function (data) {
+            var problemID = submit.getProblemID();
+            var cacheKey = submit.getCacheKey();
             var match = /<A HREF="problem\.aspx\?space=1(&amp;|&)num=(\d{4})"><nobr>\d{4}. .*?<\/nobr><\/A>/i.exec(data);
             if (match !== null) {
                 var archiveNo = match[2];
@@ -291,8 +298,12 @@
         this.noMorePages = false;
     }
 
+    Author.prototype.getCacheKeyPrefix = function() {
+        return 'author' + this.judgeID;
+    };
+
     Author.prototype.saveToCache = function () {
-        var keyPrefix = 'author' + this.judgeID;
+        var keyPrefix = this.getCacheKeyPrefix();
         setValue(keyPrefix + '_acceptedProblems',
                 JSON.stringify(this.acceptedProblems));
         setValue(keyPrefix + '_acceptedProblemsCount',
@@ -302,7 +313,7 @@
     };
 
     Author.prototype.loadFromCache = function () {
-        var keyPrefix = 'author' + this.judgeID;
+        var keyPrefix = this.getCacheKeyPrefix();
         try {
             this.acceptedProblems = JSON.parse(getValue(
                     keyPrefix + '_acceptedProblems'));
@@ -357,49 +368,58 @@
                 submit.verdict   = fields[6];
                 return submit;
             });
-            author.processSubmit(0);
+            author.processSubmitsFrom(0);
         });
     };
 
     var MSEC_PER_SEC = 1e3;
 
-    Author.prototype.processSubmit = function (index) {
-        if (index === this.submits.length) {
-            if (this.noMorePages) {
-                this.saveToCache();
-
-                if (this.retrieveCallback !== undefined)
-                    this.retrieveCallback();
-            } else
-                this.parsePage(this.submits[this.submits.length - 1].id - 1);
-            return;
+    Author.prototype.considerSubmit = function (submit) {
+        if (!(submit.problemNo in this.acceptedProblems)) {
+            var elems = submit.date
+                    .replace(/-/g, ' ').replace(/:/g, ' ').split(' ');
+            var time = new Date(elems[0], elems[1], elems[2],
+                    elems[3], elems[4], elems[5]).getTime();
+            this.acceptedProblems[submit.problemNo] = Math.floor(
+                    time / MSEC_PER_SEC);
+            this.acceptedProblemsCount++;
         }
-        var submit = this.submits[index];
-        if (this.lastSubmitID === null)
-            this.lastSubmitID = submit.id;
-        if (this.cacheAvailable && submit.id == this.cachedLastSubmitID) {
-            this.acceptedProblemsCount += this.cachedAcceptedProblemsCount;
+    };
+
+    Author.prototype.processSubmitsFrom = function (index) {
+        while (index < this.submits.length) {
+            var submit = this.submits[index];
+            if (this.lastSubmitID === null)
+                this.lastSubmitID = submit.id;
+            if (this.cacheAvailable && submit.id == this.cachedLastSubmitID) {
+                this.acceptedProblemsCount += this.cachedAcceptedProblemsCount;
+                this.noMorePages = true;
+                break;
+            }
+
+            var isConsidered = submit.isConsidered();
+            if (isConsidered === true)
+                this.considerSubmit(submit);
+            else
+            if (isConsidered === null) {
+                var author = this;
+                submit.queryWhetherConsidered(function (result) {
+                    if (result)
+                        author.considerSubmit(submit);
+                    author.processSubmitsFrom(index + 1);
+                });
+                return;
+            }
+            index++;
+        }
+
+        if (this.noMorePages) {
             this.saveToCache();
 
             if (this.retrieveCallback !== undefined)
                 this.retrieveCallback();
-            return;
-        }
-
-        var author = this;
-        submit.checkWhetherConsidered(function (isConsidered) {
-            if (isConsidered &&
-                    !(submit.problemNo in author.acceptedProblems)) {
-                var elems = submit.date
-                        .replace(/-/g, ' ').replace(/:/g, ' ').split(' ');
-                var time = new Date(elems[0], elems[1], elems[2],
-                        elems[3], elems[4], elems[5]).getTime();
-                author.acceptedProblems[submit.problemNo] = Math.floor(
-                        time / MSEC_PER_SEC);
-                author.acceptedProblemsCount++;
-            }
-            author.processSubmit(index + 1);
-        });
+        } else
+            this.parsePage(this.submits[this.submits.length - 1].id - 1);
     };
 
 
@@ -507,11 +527,20 @@
         });
     };
 
+    Chart.prototype.makeRemoveUserHandler = function (judgeID) {
+        var chart = this;
+        return function (event) {
+            chart.removeUser(judgeID);
+            event.preventDefault();
+        };
+    };
+
     Chart.prototype.redrawLegend = function () {
         var severalLines = this.lines.length > 1;
         var code = '';
-        for (var i = 0; i < this.lines.length; i++) {
-            var curLine = this.lines[i];
+        var i, curLine;
+        for (i = 0; i < this.lines.length; i++) {
+            curLine = this.lines[i];
             code += substTemplateVariables(TEMPLATE_USER_BEGIN, {
                 row_id: curLine.rowID,
                 color: curLine.color,
@@ -526,16 +555,10 @@
         }
         $('.chart_users_table').html(code);
         if (severalLines) {
-            var chart = this;
-            for (var i = 0; i < this.lines.length; i++) {
-                var curLine = this.lines[i];
+            for (i = 0; i < this.lines.length; i++) {
+                curLine = this.lines[i];
                 $('#' + curLine.rowID + ' .chart_user_delete').click(
-                    (function (judgeID) {
-                        return function (event) {
-                            chart.removeUser(judgeID);
-                            event.preventDefault();
-                        };
-                    })(curLine.author.judgeID)
+                    this.makeRemoveUserHandler(curLine.author.judgeID)
                 );
             }
         }
@@ -787,7 +810,7 @@
         if (!this.visible)
             return;
         this.visible = false;
-        setValue('chart_visible', 0);
+        setValue('chart_visible', '0');
 
         $('.chart_toggle').html(locale.showChart);
         $('#chart_place').slideUp(300);
@@ -797,7 +820,7 @@
         if (this.visible)
             return;
         this.visible = true;
-        setValue('chart_visible', 1);
+        setValue('chart_visible', '1');
 
         $('.chart_toggle').html(locale.hideChart);
         if (!this.ready)
@@ -819,7 +842,7 @@
 
     Chart.prototype.getDefaultVisibility = function () {
         try {
-            if (getValue('chart_visible') == 0)
+            if (getValue('chart_visible') === '0')
                 return false;
         } catch (err) {}
         return true;
