@@ -446,7 +446,7 @@
 
     var COLOR_GREEN = '#4f4';
     var COLOR_RED = '#f99';
-    var COLOR_BLUE = '#77f';
+    var COLOR_BLUE = '#88f';
 
     var TEMPLATE_TOGGLE_LINK = '<br /><a href="#" class="chart_toggle">{% label %}</a>';
 
