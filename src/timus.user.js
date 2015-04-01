@@ -66,7 +66,7 @@
     width: 100%;\
 }\
 .chart_box {\
-    height: 260px;\
+    height: 250px;\
 }\
 \
 .chart_comment {\
