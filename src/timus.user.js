@@ -3,7 +3,7 @@
 // @namespace    timus_charts
 // @description  Adds charts to Timus Online Judge's profiles
 // @copyright    Alexander Borzunov, 2012-2013, 2015
-// @version      1.0
+// @version      1.1
 // @icon         http://acm.timus.ru/favicon.ico
 // @include      http://acm.timus.ru/author.aspx*
 // @match        http://acm.timus.ru/author.aspx*
@@ -15,8 +15,7 @@
 // @require      http://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.min.js
 // ==/UserScript==
 
-/* jshint multistr: true */
-/* jshint -W083 */
+/* jshint multistr: true, -W083 */
 
 (function () {
     /* Engine-dependent functions */
@@ -471,7 +470,7 @@
     var TEMPLATE_CHART = '<div id="chart_place" style="display: none;">\
     <div id="chart_loading" class="chart_box">\
         <div class="chart_comment chart_version">\
-            Timus Charts, ' + locale.version + ' 1.0\
+            Timus Charts, ' + locale.version + ' 1.1\
         </div>\
         <div class="chart_spin"></div>\
         <div id="chart_query_error" style="display: none;">\
