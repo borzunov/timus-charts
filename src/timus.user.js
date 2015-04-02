@@ -57,17 +57,15 @@
     width: 100%;\
 }\
 .chart_box {\
-    height: 250px;\
+    height: 255px;\
 }\
 \
 .chart_comment {\
-    color: #555555;\
+    color: #555;\
     font-size: 15;\
 }\
 \
-.chart_error_judge_id {\
-    color: red;\
-    font-size: 14;\
+#chart_loading_error_judge_id {\
     margin-top: 5px;\
 }\
 \
@@ -107,6 +105,12 @@
 .chart_spin {\
     position: relative;\
     top: 130px;\
+}\
+\
+#chart_query_error {\
+    clear: right;\
+    position: relative;\
+    top: 40%;\
 }\
 \
 .chart_new_user {\
@@ -184,6 +188,8 @@
             judgeIDIncorrectFormat: "Incorrect Judge ID format (there's no digits)!",
             judgeIDIsAlreadyAdded: "This Judge ID has already been added!",
             judgeIDLabel: "Judge ID or link:",
+            queryFailed: "An error occured during the request to the server.",
+            refreshPage: "Check your internet connection and refresh the page.",
             showChart: "Show chart",
             version: "version",
             wrongJudgeID: "There's no submits on this Judge ID",
@@ -198,6 +204,8 @@
             judgeIDIncorrectFormat: "Некорректный формат Judge ID (нет цифр)!",
             judgeIDIsAlreadyAdded: "Этот Judge ID уже присутствует на графике!",
             judgeIDLabel: "Judge ID или ссылка:",
+            queryFailed: "Произошла ошибка во время запроса к серверу. ",
+            refreshPage: "Проверьте ваше интернет-соединение и обновите страницу.",
             showChart: "Показать график",
             version: "версия",
             wrongJudgeID: "Не найдено посылок по этому Judge ID",
@@ -253,7 +261,8 @@
         return null;
     };
 
-    Submit.prototype.queryWhetherConsidered = function (callback) {
+    Submit.prototype.queryWhetherConsidered = function (
+            resultCallback, failCallback) {
         var address = 'http://acm.timus.ru/problem.aspx?space=' +
                 this.space + '&num=' + this.problemNo;
         var submit = this;
@@ -268,14 +277,14 @@
 
                 submit.space = 1;
                 submit.problemNo = archiveNo;
-                callback(true);
+                resultCallback(true);
             } else {
                 Submit.problemsFromContests[problemID] = "null";
                 setValue(cacheKey, "null");
 
-                callback(false);
+                resultCallback(false);
             }
-        });
+        }).fail(failCallback);
     };
 
 
@@ -319,19 +328,20 @@
     };
 
     Author.prototype.retrieve = function (
-            expectedAcceptedProblemsCount, callback) {
+            expectedAcceptedProblemsCount, resultCallback, failCallback) {
         this.loadFromCache();
         if (this.cacheAvailable && this.cachedAcceptedProblemsCount ==
                 expectedAcceptedProblemsCount) {
             this.acceptedProblemsCount = this.cachedAcceptedProblemsCount;
             this.lastSubmitID = this.cachedLastSubmitID;
 
-            if (callback !== undefined)
-                callback();
+            if (resultCallback !== undefined)
+                resultCallback();
             return;
         }
 
-        this.retrieveCallback = callback;
+        this.retrieveCallback = resultCallback;
+        this.failCallback = failCallback;
         this.parsePage(null);
     };
 
@@ -360,7 +370,7 @@
                 return submit;
             });
             author.processSubmitsFrom(0);
-        });
+        }).fail(this.failCallback);
     };
 
     var MSEC_PER_SEC = 1e3;
@@ -398,7 +408,7 @@
                     if (result)
                         author.considerSubmit(submit);
                     author.processSubmitsFrom(index + 1);
-                });
+                }, this.failCallback);
                 return;
             }
             index++;
@@ -464,6 +474,12 @@
             Timus Charts, ' + locale.version + ' 1.0\
         </div>\
         <div class="chart_spin"></div>\
+        <div id="chart_query_error" style="display: none;">\
+            <div class="chart_comment">\
+                ' + locale.queryFailed + '<br />\
+                ' + locale.refreshPage + '\
+            </div>\
+        </div>\
     </div>\
     <div id="chart" class="chart_box" style="display: none;"></div>\
     <div class="chart_legend_box" style="display: none;">\
@@ -476,7 +492,7 @@
                 <div id="chart_new_user_color" class="chart_user_color" style="background: ' + COLOR_BLUE + ';"></div>\
                 ' + locale.judgeIDLabel + ' <input type="text" class="chart_judge_id_input" />\
                 <a href="#" class="chart_user_add">' + locale.add + '</a>\
-                <div class="chart_error_judge_id" style="display: none;"></div>\
+                <div id="chart_loading_error_judge_id" class="chart_comment" style="display: none;"></div>\
             </div>\
         </div>\
     </div>\
@@ -509,6 +525,15 @@
             return;
         }
         return this.loadingState;
+    };
+
+    Chart.prototype.showQueryError = function () {
+        this.loading(false);
+        $('.chart_legend_open').hide();
+        $('.chart_legend').hide();
+        $('#chart').hide();
+        $('#chart_loading').show();
+        $('#chart_query_error').show();
     };
 
     Chart.prototype.sortLines = function () {
@@ -633,17 +658,15 @@
 
     Chart.prototype.showJudgeIDError = function (message) {
         this.loading(false);
-        $('.chart_error_judge_id').html(message).slideDown(50);
+        $('#chart_loading_error_judge_id').html(message).slideDown(50);
     };
 
-    Chart.prototype.addUser = function (
-            judgeID, name, color, deleteButton,
-            expectedAcceptedProblemsCount, callback) {
+    Chart.prototype.addUser = function (judgeID, name, color,
+            expectedAcceptedProblemsCount, isCritical, callback) {
         this.linesExpected++;
         var chart = this;
         var author = new Author(judgeID);
-        author.retrieve(expectedAcceptedProblemsCount,
-                function() {
+        author.retrieve(expectedAcceptedProblemsCount, function() {
             var line = new Line(author, name, color);
             line.make();
             if (line.points.length < 2) {
@@ -659,6 +682,12 @@
                 if (callback !== undefined)
                     callback();
             }
+        }, function () {
+            chart.linesExpected--;
+            if (isCritical)
+                chart.showQueryError();
+            else
+                chart.showJudgeIDError(locale.queryFailed);
         });
     };
 
@@ -676,7 +705,7 @@
         if (this.loading())
             return;
         this.loading(true);
-        $('.chart_error_judge_id').hide();
+        $('#chart_loading_error_judge_id').hide();
 
         var judgeID = $('.chart_judge_id_input').val();
         var match = /(\d+)[^\d]*$/.exec(judgeID);
@@ -703,11 +732,13 @@
             var name = match[2];
 
             var color = $('#chart_new_user_color').css('background-color');
-            chart.addUser(judgeID, name, color, true, null, function () {
+            chart.addUser(judgeID, name, color, null, false, function () {
                 $('.chart_judge_id_input').val('');
                 $('#chart_new_user_color')
                         .css('background-color', randomColor());
             });
+        }).fail(function () {
+            chart.showJudgeIDError(locale.queryFailed);
         });
     };
 
@@ -788,13 +819,13 @@
                     $('.author_comparison_legend .padright:first').html();
             if (this.greenCount >= 2)
                 this.addUser(this.matchCompareto[1], otherName, COLOR_GREEN,
-                        false, this.greenCount);
+                        this.greenCount, true);
             if (this.redCount >= 2)
                 this.addUser(this.matchId[1], profileName, COLOR_RED,
-                        false, this.redCount);
+                        this.redCount, true);
         } else
             this.addUser(this.matchId[1], profileName, COLOR_GREEN,
-                    false, this.problemsCount);
+                    this.problemsCount, true);
     };
 
     Chart.prototype.hide = function () {
