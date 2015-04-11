@@ -291,10 +291,10 @@
         this.judgeID = judgeID;
         this.acceptedProblems = {};
         this.acceptedProblemsCount = 0;
-        this.submitsAddress = 'http://acm.timus.ru/textstatus.aspx?author=' +
-                judgeID + '&status=accepted';
+        this.submitsQuery = '?author=' + judgeID + '&status=accepted';
         this.lastSubmitID = null;
         this.noMorePages = false;
+        this.hasDeletedProblems = false;
     }
 
     Author.prototype.getCacheKeyPrefix = function() {
@@ -341,16 +341,38 @@
 
         this.retrieveCallback = resultCallback;
         this.failCallback = failCallback;
-        this.parsePage(null);
+        this.parseSubmitsPage(null);
     };
 
-    Author.prototype.parsePage = function (fromSubmitID) {
-        var submitsQueried = (this.cacheAvailable ? 200 : 1000);
-        var address = this.submitsAddress + '&count=' + submitsQueried;
-        if (fromSubmitID !== null)
-            address += '&from=' + fromSubmitID;
+    Author.prototype.getSubmitsPage = function (
+            query, resultCallback, failCallback) {
         var author = this;
-        $.get(address, function (data) {
+        var url = 'http://acm.timus.ru/textstatus.aspx' + query;
+        if (!this.hasDeletedProblems) {
+            $.get(url, function (data) {
+                var expr = /<HTML>/i;
+                if (expr.test(data)) {
+                    author.hasDeletedProblems = true;
+                    author.getSubmitsPage(query, resultCallback, failCallback);
+                    return;
+                }
+                resultCallback(data);
+            }).fail(failCallback);
+            return;
+        }
+        // Timus API throws an exception if the author have submits on
+        // deleted problems (e.g. in private contests).
+
+        $.get(url + '&space=1', resultCallback).fail(failCallback);
+    };
+
+    Author.prototype.parseSubmitsPage = function (fromSubmitID) {
+        var submitsQueried = (this.cacheAvailable ? 200 : 1000);
+        var query = this.submitsQuery + '&count=' + submitsQueried;
+        if (fromSubmitID !== null)
+            query += '&from=' + fromSubmitID;
+        var author = this;
+        this.getSubmitsPage(query, function (data) {
             var lines = data.split('\n')
                             .filter(function (line) {
                                 return line !== '';
@@ -389,7 +411,7 @@
                 return;
             }
             author.processSubmitsFrom(0);
-        }).fail(this.failCallback);
+        }, this.failCallback);
     };
 
     var MSEC_PER_SEC = 1e3;
@@ -407,7 +429,7 @@
             var submit = this.submits[index];
             if (this.lastSubmitID === null)
                 this.lastSubmitID = submit.id;
-            if (this.cacheAvailable && submit.id == this.cachedLastSubmitID) {
+            if (this.cacheAvailable && submit.id <= this.cachedLastSubmitID) {
                 this.acceptedProblemsCount += this.cachedAcceptedProblemsCount;
                 this.noMorePages = true;
                 break;
@@ -435,7 +457,8 @@
             if (this.retrieveCallback !== undefined)
                 this.retrieveCallback();
         } else
-            this.parsePage(this.submits[this.submits.length - 1].id - 1);
+            this.parseSubmitsPage(
+                    this.submits[this.submits.length - 1].id - 1);
     };
 
 
