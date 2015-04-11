@@ -187,8 +187,8 @@
             judgeIDIncorrectFormat: "Incorrect Judge ID format (there's no digits)!",
             judgeIDIsAlreadyAdded: "This Judge ID has already been added!",
             judgeIDLabel: "Judge ID or link:",
-            queryFailed: "An error occured during the request to the server.",
-            refreshPage: "Check your internet connection and refresh the page.",
+            queryFailed: "An error occured on the request to the server.",
+            refreshPage: "Try to refresh the page.",
             showChart: "Show chart",
             version: "version",
             wrongJudgeID: "There's no submits on this Judge ID",
@@ -203,8 +203,8 @@
             judgeIDIncorrectFormat: "Некорректный формат Judge ID (нет цифр)!",
             judgeIDIsAlreadyAdded: "Этот Judge ID уже присутствует на графике!",
             judgeIDLabel: "Judge ID или ссылка:",
-            queryFailed: "Произошла ошибка во время запроса к серверу. ",
-            refreshPage: "Проверьте ваше интернет-соединение и обновите страницу.",
+            queryFailed: "Произошла ошибка при запросе к серверу. ",
+            refreshPage: "Попробуйте обновить страницу.",
             showChart: "Показать график",
             version: "версия",
             wrongJudgeID: "Не найдено посылок по этому Judge ID",
@@ -352,22 +352,42 @@
         var author = this;
         $.get(address, function (data) {
             var lines = data.split('\n')
-                            .slice(1)
                             .filter(function (line) {
                                 return line !== '';
                             });
+            if (!lines.length || !lines[0].startsWith('submit')) {
+                author.failCallback();
+                return;
+            }
+
+            lines = lines.slice(1);
             if (lines.length < submitsQueried)
                 author.noMorePages = true;
-            author.submits = lines.map(function (line) {
-                var fields = line.split('\t');
-                var submit = new Submit();
-                submit.id        = fields[0];
-                submit.date      = fields[1];
-                submit.space     = fields[3];
-                submit.problemNo = fields[4];
-                submit.verdict   = fields[6];
-                return submit;
-            });
+            try {
+                author.submits = lines.map(function (line) {
+                    var fields = line.split('\t');
+                    var submit = new Submit();
+
+                    submit.id        = parseInt(fields[0]);
+                    submit.space     = parseInt(fields[3]);
+                    submit.problemNo = parseInt(fields[4]);
+                    var elems = fields[1]
+                            .replace(/-/g, ' ').replace(/:/g, ' ').split(' ');
+                    submit.time      = new Date(elems[0], elems[1], elems[2],
+                            elems[3], elems[4], elems[5]).getTime();
+                    submit.verdict   = fields[6];
+                    if (
+                        isNaN(submit.id) || isNaN(submit.space) ||
+                        isNaN(submit.problemNo) || isNaN(submit.time)
+                    )
+                        throw new Error(
+                                "Failed to parse information about submit");
+                    return submit;
+                });
+            } catch (err) {
+                author.failCallback();
+                return;
+            }
             author.processSubmitsFrom(0);
         }).fail(this.failCallback);
     };
@@ -376,12 +396,8 @@
 
     Author.prototype.considerSubmit = function (submit) {
         if (!(submit.problemNo in this.acceptedProblems)) {
-            var elems = submit.date
-                    .replace(/-/g, ' ').replace(/:/g, ' ').split(' ');
-            var time = new Date(elems[0], elems[1], elems[2],
-                    elems[3], elems[4], elems[5]).getTime();
             this.acceptedProblems[submit.problemNo] = Math.floor(
-                    time / MSEC_PER_SEC);
+                    submit.time / MSEC_PER_SEC);
             this.acceptedProblemsCount++;
         }
     };
@@ -506,6 +522,7 @@
 
         this.animateComplete = false;
         this.loadingState = false;
+        this.hasCriticalError = false;
     }
 
     Chart.prototype.loading = function (state) {
@@ -669,8 +686,12 @@
             var line = new Line(author, name, color);
             line.make();
             if (line.points.length < 2) {
+                if (isCritical) {
+                    chart.hasCriticalError = true;
+                    chart.showQueryError();
+                } else
+                    chart.showJudgeIDError(locale.judgeIDNotEnoughOfAccepted);
                 chart.linesExpected--;
-                chart.showJudgeIDError(locale.judgeIDNotEnoughOfAccepted);
                 return;
             }
 
@@ -682,11 +703,12 @@
                     callback();
             }
         }, function () {
-            chart.linesExpected--;
-            if (isCritical)
+            if (isCritical) {
+                chart.hasCriticalError = true;
                 chart.showQueryError();
-            else
+            } else
                 chart.showJudgeIDError(locale.queryFailed);
+            chart.linesExpected--;
         });
     };
 
@@ -856,7 +878,8 @@
             .width($('.solved_map_box').width())
             .slideDown(300, function() {
                 chart.animateComplete = true;
-                if (chart.lines.length === chart.linesExpected)
+                if (!chart.hasCriticalError &&
+                        chart.lines.length === chart.linesExpected)
                     chart.redraw();
             });
     };
