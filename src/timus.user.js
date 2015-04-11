@@ -9,6 +9,7 @@
 // @match        http://acm.timus.ru/author.aspx*
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @grant        GM_xmlhttpRequest
 // @require      http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require      http://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/jquery.jqplot.min.js
 // @require      http://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.dateAxisRenderer.min.js
@@ -20,11 +21,16 @@
 (function () {
     /* Engine-dependent functions */
 
-    var isFirefox = (navigator.userAgent.indexOf('Firefox') !== -1);
+    var isGreasemonkey = (
+        typeof GM_getValue !== "undefined" &&
+        typeof GM_setValue !== "undefined" &&
+        typeof GM_xmlhttpRequest !== "undefined"
+    );
+    var isChrome = (typeof chrome !== "undefined");
 
     function getValue(key) {
         var value;
-        if (isFirefox)
+        if (isGreasemonkey)
             value = GM_getValue(key);
         else
             value = localStorage[key];
@@ -36,7 +42,7 @@
 
     function setValue(key, value) {
         try {
-            if (isFirefox)
+            if (isGreasemonkey)
                 GM_setValue(key, value);
             else
                 localStorage[key] = value;
@@ -363,7 +369,27 @@
         // Timus API throws an exception if the author have submits on
         // deleted problems (e.g. in private contests).
 
-        $.get(url + '&space=1', resultCallback).fail(failCallback);
+        //if (isChrome)
+        //else
+        if (isGreasemonkey) {
+            GM_xmlhttpRequest({
+                method: "GET",
+                url: 'http://acm.timus.ru./textstatus.aspx' + query,
+                headers: {
+                    'Host': 'acm.timus.ru',
+                },
+                onload: function (response) {
+                    resultCallback(response.responseText);
+                },
+                onabort: function (response) {
+                    failCallback();
+                },
+                onerror: function (response) {
+                    failCallback();
+                },
+            });
+        } else
+            $.get(url + '&space=1', resultCallback).fail(failCallback);
     };
 
     Author.prototype.parseSubmitsPage = function (fromSubmitID) {
