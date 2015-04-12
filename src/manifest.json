@@ -7,13 +7,21 @@
     "icons": {
         "128": "icon.png"
     },
+    "permissions": [
+        "cookies",
+        "http://acm.timus.ru/author.aspx*"
+    ],
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
     "content_scripts": [{
         "js": [
             "jquery.min.js",
             "jquery.jqplot.min.js",
             "jqplot.dateAxisRenderer.min.js",
-            "timus.user.js",
-            "spin.min.js"
+            "spin.min.js",
+            "timus.user.js"
         ],
         "include_globs": [
             "http://acm.timus.ru/author.aspx*"

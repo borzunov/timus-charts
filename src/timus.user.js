@@ -350,6 +350,34 @@
         this.parseSubmitsPage(null);
     };
 
+    Author._getPublicSubmitsPage_Chrome = function (
+            url, resultCallback, failCallback) {
+        chrome.runtime.sendMessage({action: 'stash_cookies'}, function () {
+            $.get(url).then(resultCallback, failCallback);
+            chrome.runtime.sendMessage({action: 'expose_cookies'});
+        });
+    };
+
+    Author._getPublicSubmitsPage_Greasemonkey = function (
+            query, resultCallback, failCallback) {
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: 'http://acm.timus.ru./textstatus.aspx' + query,
+            headers: {
+                'Host': 'acm.timus.ru',
+            },
+            onload: function (response) {
+                resultCallback(response.responseText);
+            },
+            onabort: function (response) {
+                failCallback();
+            },
+            onerror: function (response) {
+                failCallback();
+            },
+        });
+    };
+
     Author.prototype.getSubmitsPage = function (
             query, resultCallback, failCallback) {
         var author = this;
@@ -369,27 +397,17 @@
         // Timus API throws an exception if the author have submits on
         // deleted problems (e.g. in private contests).
 
-        //if (isChrome)
-        //else
-        if (isGreasemonkey) {
-            GM_xmlhttpRequest({
-                method: "GET",
-                url: 'http://acm.timus.ru./textstatus.aspx' + query,
-                headers: {
-                    'Host': 'acm.timus.ru',
-                },
-                onload: function (response) {
-                    resultCallback(response.responseText);
-                },
-                onabort: function (response) {
-                    failCallback();
-                },
-                onerror: function (response) {
-                    failCallback();
-                },
-            });
-        } else
-            $.get(url + '&space=1', resultCallback).fail(failCallback);
+        if (isChrome)
+            Author._getPublicSubmitsPage_Chrome(
+                    url, resultCallback, failCallback);
+        else
+        if (isGreasemonkey)
+            Author._getPublicSubmitsPage_Greasemonkey(
+                    query, resultCallback, failCallback);
+        else
+            // If there's no appropriate workaround,
+            // just skip additional problem spaces
+            $.get(url + '&space=1').then(resultCallback, failCallback);
     };
 
     Author.prototype.parseSubmitsPage = function (fromSubmitID) {
