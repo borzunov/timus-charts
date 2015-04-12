@@ -5,6 +5,8 @@
 // @copyright    Alexander Borzunov, 2012-2013, 2015
 // @version      1.1
 // @icon         http://acm.timus.ru/favicon.ico
+// @downloadURL  https://openuserjs.org/install/hx0/Timus_Charts.user.js
+// @updateURL    https://openuserjs.org/install/hx0/Timus_Charts.user.js
 // @include      http://acm.timus.ru/author.aspx*
 // @match        http://acm.timus.ru/author.aspx*
 // @grant        GM_getValue
