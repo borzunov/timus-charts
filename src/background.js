@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                     });
                 });
             });
-            break;
+            return true;
         case 'expose_cookies':
             sessionCookie.url = COOKIES_URL;
             chrome.cookies.set(cookieToSetDetails(
@@ -48,11 +48,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             ), function () {
                 chrome.cookies.set(cookieToSetDetails(
                     COOKIES_URL, authorCookie
-                ), function () {
-                    sendResponse();
-                });
+                ));
             });
-            break;
+            return;
     }
-    return true;
 });
