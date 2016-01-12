@@ -2,8 +2,8 @@
 // @name         Timus Charts
 // @namespace    timus_charts
 // @description  Adds charts to Timus Online Judge's profiles
-// @copyright    Alexander Borzunov, 2012-2013, 2015
-// @version      1.1
+// @copyright    Alexander Borzunov, 2012-2013, 2015-2016
+// @version      1.2
 // @icon         http://acm.timus.ru/favicon.ico
 // @downloadURL  https://openuserjs.org/install/hx0/Timus_Charts.user.js
 // @updateURL    https://openuserjs.org/install/hx0/Timus_Charts.user.js
@@ -441,7 +441,8 @@
                     submit.problemNo = parseInt(fields[4]);
                     var elems = fields[1]
                             .replace(/-/g, ' ').replace(/:/g, ' ').split(' ');
-                    submit.time      = new Date(elems[0], elems[1], elems[2],
+                    submit.time      = new Date(
+                            elems[0], elems[1] - 1, elems[2],
                             elems[3], elems[4], elems[5]).getTime();
                     submit.verdict   = fields[6];
                     if (
