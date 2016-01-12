@@ -190,7 +190,7 @@
             addUsers: "Add users",
             del: "Delete",
             hideChart: "Hide chart",
-            judgeIDDoesntExists: "This user doesn't exists!",
+            judgeIDDoesntExist: "This user doesn't exist!",
             judgeIDNotEnoughOfAccepted: "The user must have at least two solved problems!",
             judgeIDIncorrectFormat: "Incorrect Judge ID format (there's no digits)!",
             judgeIDIsAlreadyAdded: "This Judge ID has already been added!",
@@ -206,7 +206,7 @@
             addUsers: "Добавить пользователей",
             del: "Удалить",
             hideChart: "Скрыть график",
-            judgeIDDoesntExists: "Такого пользователя не существует!",
+            judgeIDDoesntExist: "Такого пользователя не существует!",
             judgeIDNotEnoughOfAccepted: "Пользователь должен иметь не менее двух решённых задач!",
             judgeIDIncorrectFormat: "Некорректный формат Judge ID (нет цифр)!",
             judgeIDIsAlreadyAdded: "Этот Judge ID уже присутствует на графике!",
@@ -817,7 +817,7 @@
         $.get(address, function (data) {
             var match = /<H2 CLASS="author_name">(<A HREF=".*?" TARGET="_blank">)?(.+?)(<\/A>)?<\/H2>/i.exec(data);
             if (match === null) {
-                chart.showJudgeIDError(locale.judgeIDDoesntExists);
+                chart.showJudgeIDError(locale.judgeIDDoesntExist);
                 return;
             }
             var name = match[2];
