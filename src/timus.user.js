@@ -21,6 +21,10 @@
 /* jshint multistr: true, -W083 */
 
 (function () {
+    var SCRIPT_VERSION = '1.2';
+    var CACHE_VERSION = 2;
+
+
     /* Engine-dependent functions */
 
     var isGreasemonkey = (
@@ -311,6 +315,8 @@
 
     Author.prototype.saveToCache = function () {
         var keyPrefix = this.getCacheKeyPrefix();
+        setValue(keyPrefix + '_cacheVer', CACHE_VERSION);
+
         setValue(keyPrefix + '_acceptedProblems',
                 JSON.stringify(this.acceptedProblems));
         setValue(keyPrefix + '_acceptedProblemsCount',
@@ -322,6 +328,10 @@
     Author.prototype.loadFromCache = function () {
         var keyPrefix = this.getCacheKeyPrefix();
         try {
+            var cacheVersion = parseInt(getValue(keyPrefix + '_cacheVer'));
+            if (cacheVersion !== CACHE_VERSION)
+                throw new Error('Incompatible cache version');
+
             this.acceptedProblems = JSON.parse(getValue(
                     keyPrefix + '_acceptedProblems'));
             this.cachedAcceptedProblemsCount = parseInt(getValue(
@@ -556,7 +566,7 @@
     var TEMPLATE_CHART = '<div id="chart_place" style="display: none;">\
     <div id="chart_loading" class="chart_box">\
         <div class="chart_comment chart_version">\
-            Timus Charts, ' + locale.version + ' 1.2\
+            Timus Charts, ' + locale.version + ' ' + SCRIPT_VERSION + '\
         </div>\
         <div class="chart_spin"></div>\
         <div id="chart_query_error" style="display: none;">\
