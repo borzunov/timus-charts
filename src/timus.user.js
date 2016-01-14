@@ -556,7 +556,7 @@
     var TEMPLATE_CHART = '<div id="chart_place" style="display: none;">\
     <div id="chart_loading" class="chart_box">\
         <div class="chart_comment chart_version">\
-            Timus Charts, ' + locale.version + ' 1.1\
+            Timus Charts, ' + locale.version + ' 1.2\
         </div>\
         <div class="chart_spin"></div>\
         <div id="chart_query_error" style="display: none;">\
