@@ -1,0 +1,49 @@
+Timus Charts
+============
+
+Adds charts to Timus Online Judge profiles
+
+![Screenshot](http://habrastorage.org/files/219/cd9/e48/219cd9e482914d6095e52749f4aa3d82.png)
+
+Features
+--------
+
+* A chart of count of solved problems in profiles and during comparison
+* Adding more users to the chart, removing them, customizing legend colors
+* Caching profile data
+* Hiding the chart
+
+The extension is available for Chrome, Firefox (with Greasemonkey) and Opera. Built with [jqPlot](http://jqplot.com/).
+
+Installation
+------------
+
+![ ](https://raw.githubusercontent.com/alrra/browser-logos/master/chrome/chrome_16x16.png) **Google Chrome**
+
+* The extension is available in [Chrome Web Store](https://chrome.google.com/webstore/detail/timus-charts/jholigcfjhipjahcjoccgkfjikkcekki).
+
+![ ](https://raw.githubusercontent.com/alrra/browser-logos/master/firefox/firefox_16x16.png) **Firefox**
+
+1. Install [Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/).
+
+2. The extension will be available for installation on [the page on OpenUserJS.org](https://openuserjs.org/scripts/hx0/Timus_Charts).
+
+![ ](https://raw.githubusercontent.com/alrra/browser-logos/master/opera/opera_16x16.png) **Opera** > 12 and ![ ](https://raw.githubusercontent.com/alrra/browser-logos/master/yandex/yandex_16x16.png) **Yandex.Browser**
+
+* The extension is available on [Opera Add-ons](https://addons.opera.com/extensions/details/timus-charts/).
+
+![ ](https://raw.githubusercontent.com/alrra/browser-logos/master/safari/safari_16x16.png) **Safari**
+
+1. Install [Tampermonkey for Safari](https://tampermonkey.net/index.php?ext=dhdg&browser=safari).
+
+2. The extension will be available for installation on [the page on OpenUserJS.org](https://openuserjs.org/scripts/hx0/Timus_Charts).
+
+Author
+------
+
+Copyright (c) 2012-2013, 2015-2016 Alexander Borzunov
+
+See also
+--------
+
+* [Timus Friends](https://github.com/slava-sh/timus-friends) extension by [slava-sh](https://github.com/slava-sh)
