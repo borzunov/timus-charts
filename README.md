@@ -3,7 +3,7 @@ Timus Charts
 
 Adds charts to Timus Online Judge profiles
 
-![Screenshot](http://habrastorage.org/files/219/cd9/e48/219cd9e482914d6095e52749f4aa3d82.png)
+![Screenshot](screenshots/chrome/many-users-cropped.png)
 
 Features
 --------
