@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Timus Charts
 // @namespace    timus_charts
-// @description  Adds charts to Timus Online Judge's profiles
+// @description  Adds charts to Timus Online Judge profiles
 // @copyright    Alexander Borzunov, 2012-2013, 2015-2016
-// @version      1.2
+// @version      1.3
 // @icon         http://acm.timus.ru/favicon.ico
 // @downloadURL  https://openuserjs.org/install/hx0/Timus_Charts.user.js
 // @updateURL    https://openuserjs.org/install/hx0/Timus_Charts.user.js
@@ -18,5 +18,5 @@
 // @require      http://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.min.js
 // ==/UserScript==
 
-var SCRIPT_VERSION = '1.2';
+var SCRIPT_VERSION = '1.3';
 var CACHE_VERSION = 2;
