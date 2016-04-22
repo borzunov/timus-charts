@@ -170,11 +170,13 @@ class Author {
     }
 
     considerSubmit (submit) {
-        if (submit.problemNo in this.acceptedProblems)
-            return;
-        this.acceptedProblems[submit.problemNo] = Math.floor(
-                submit.time / MSEC_PER_SEC);
-        this.acceptedProblemsCount++;
+        var seconds = Math.floor(submit.time / MSEC_PER_SEC);
+        var alreadyAccepted = submit.problemNo in this.acceptedProblems;
+        if (!alreadyAccepted)
+            this.acceptedProblemsCount++;
+        if (!alreadyAccepted ||
+                seconds < this.acceptedProblems[submit.problemNo])
+            this.acceptedProblems[problemNo] = seconds;
     }
 
     processSubmitsFrom (index) {
