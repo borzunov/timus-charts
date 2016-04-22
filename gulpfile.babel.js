@@ -5,7 +5,10 @@ import runSequence from 'run-sequence';
 
 const $ = gulpLoadPlugins();
 
+const DEBUG = true;
+
 gulp.task('content_scripts', () => {
+    // FIXME: don't transform metadata.js
     return gulp.src([
         'metadata.js',
         'compat.js',
@@ -20,7 +23,10 @@ gulp.task('content_scripts', () => {
 
         'content.js',
     ], {'cwd': 'app/content_scripts'})
+        .pipe($.if(DEBUG, $.sourcemaps.init()))
+        .pipe($.babel())
         .pipe($.concat('timus.user.js'))
+        .pipe($.if(DEBUG, $.sourcemaps.write('.')))
         .pipe(gulp.dest('dist'));
 });
 
@@ -31,6 +37,10 @@ gulp.task('extras', () => {
         'app/*.png',
     ], {'base': 'app'})
         .pipe(gulp.dest('dist'));
+});
+
+gulp.task('watch', ['build'], () => {
+    gulp.watch('app/content_scripts/**/*.js', ['content_scripts']);
 });
 
 gulp.task('clean', cb => del(['dist'], cb));

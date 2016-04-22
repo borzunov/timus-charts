@@ -1,21 +1,14 @@
-function Line(author, name, color) {
-    this.author = author;
-    this.rowID = 'chart_user_' + author.judgeID;
-    this.name = name;
-    this.color = color;
-}
-
-Line.prototype.make = function () {
-    var dates = [];
-    for (var key in this.author.acceptedProblems) {
-        var value = this.author.acceptedProblems[key] * MSEC_PER_SEC;
-        if (value !== true)
-            dates.push(value);
+class Line {
+    constructor (author, name, color) {
+        this.author = author;
+        this.name = name;
+        this.color = color;
     }
-    dates.sort(function (a, b) {
-        return a - b;
-    });
-    this.points = [];
-    for (var i = 0; i < dates.length; i++)
-        this.points.push([new Date(dates[i]), i + 1]);
-};
+
+    make () {
+        this.points = Object.keys(this.author.acceptedProblems)
+            .map(key => this.author.acceptedProblems[key] * MSEC_PER_SEC)
+            .sort((a, b) => a - b)
+            .map((date, i) => [new Date(date), i + 1]);
+    }
+}

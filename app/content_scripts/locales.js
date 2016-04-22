@@ -1,4 +1,4 @@
-var LOCALES = {
+const LOCALES = {
     "en": {
         add: "Add",
         addUsers: "Add users",
