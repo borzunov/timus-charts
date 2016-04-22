@@ -223,7 +223,7 @@ class Chart {
             var name = match[2];
 
             var color = $('#chart_new_user_color').css('background-color');
-            this.addUser(judgeID, name, color, null, false, function () {
+            this.addUser(judgeID, name, color, null, false, () => {
                 $('.chart_judge_id_input').val('');
                 $('#chart_new_user_color')
                         .css('background-color', randomColor());
@@ -270,7 +270,7 @@ class Chart {
 
     createChartPlace () {
         $('.author_links').after(TEMPLATE_CHART);
-        $('#chart_new_user_color').click(function() {
+        $('#chart_new_user_color').click(function () {
             $(this).css('background-color', randomColor());
         });
         $('.chart_legend_open').click(event => {

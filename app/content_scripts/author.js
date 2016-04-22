@@ -64,7 +64,7 @@ class Author {
     }
 
     static _getPublicSubmitsPage_Chrome (url, resultCallback, failCallback) {
-        chrome.runtime.sendMessage({action: 'stash_cookies'}, function () {
+        chrome.runtime.sendMessage({action: 'stash_cookies'}, () => {
             $.get(url).then(resultCallback, failCallback);
             chrome.runtime.sendMessage({action: 'expose_cookies'});
         });
@@ -126,21 +126,19 @@ class Author {
         if (fromSubmitID !== null)
             query += '&from=' + fromSubmitID;
         var author = this;
-        this.getSubmitsPage(query, function (data) {
+        this.getSubmitsPage(query, data => {
             var lines = data.split('\n')
-                            .filter(function (line) {
-                                return line !== '';
-                            });
+                .filter(line => line !== '');
             if (!lines.length || !lines[0].startsWith('submit')) {
-                author.failCallback();
+                this.failCallback();
                 return;
             }
 
             lines = lines.slice(1);
             if (lines.length < submitsQueried)
-                author.noMorePages = true;
+                this.noMorePages = true;
             try {
-                author.submits = lines.map(function (line) {
+                this.submits = lines.map(line => {
                     var fields = line.split('\t');
                     var submit = new Submit();
 
@@ -162,10 +160,10 @@ class Author {
                     return submit;
                 });
             } catch (err) {
-                author.failCallback();
+                this.failCallback();
                 return;
             }
-            author.processSubmitsFrom(0);
+            this.processSubmitsFrom(0);
         }, this.failCallback);
     }
 
@@ -195,11 +193,10 @@ class Author {
                 this.considerSubmit(submit);
             else
             if (isConsidered === null) {
-                var author = this;
-                submit.queryWhetherConsidered(function (result) {
+                submit.queryWhetherConsidered(result => {
                     if (result)
-                        author.considerSubmit(submit);
-                    author.processSubmitsFrom(index + 1);
+                        this.considerSubmit(submit);
+                    this.processSubmitsFrom(index + 1);
                 }, this.failCallback);
                 return;
             }
