@@ -13,7 +13,7 @@ Features
 * Caching profile data
 * Hiding the chart
 
-The extension is available for Chrome, Firefox (with Greasemonkey) and Opera. Built with [jqPlot](http://jqplot.com/).
+Built with [jqPlot](http://jqplot.com/).
 
 Installation
 ------------
