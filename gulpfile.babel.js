@@ -18,10 +18,13 @@ gulp.task('content_scripts', () => {
 
         'submit.js',
         'author.js',
-        'line.js',
         'page_parser.js',
         'data_retriever.js',
+
+        'line.js',
         'chart.js',
+
+        'last_ac_highlighter.js',
 
         'content.js',
     ], {'cwd': 'app/content_scripts'})
