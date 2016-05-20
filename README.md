@@ -12,6 +12,7 @@ Features
 * Adding more users to the chart, removing them, customizing legend colors
 * Caching profile data
 * Hiding the chart
+* _(optional)_ Highlighting last accepted problems
 
 Built with [jqPlot](http://jqplot.com/).
 
@@ -38,10 +39,12 @@ Installation
 
 2. The extension will be available for installation on [the page on OpenUserJS.org](https://openuserjs.org/scripts/hx0/Timus_Charts).
 
-Author
-------
+Authors
+-------
 
 Copyright (c) 2012-2013, 2015-2016 Alexander Borzunov
+
+Highlighting of last AC by [Slava Shklyaev](https://github.com/slava-sh).
 
 See also
 --------
