@@ -1,7 +1,4 @@
-var chart = new Chart();
-if (chart.areEnoughDataPresent()) {
-    var expectedVisibility = chart.getDefaultVisibility();
-    chart.createToggleLink(expectedVisibility);
-    if (expectedVisibility)
-        $(() => chart.show());
-}
+var pageParser = new PageParser();
+var dataRetriever = new DataRetriever(pageParser);
+
+new Chart(pageParser, dataRetriever).arrange();

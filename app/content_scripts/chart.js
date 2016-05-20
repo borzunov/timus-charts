@@ -11,10 +11,12 @@ function randomColor() {
 const YAXIS_SMALLEST_MAX = 10;
 const XAXIS_CRITICAL_DIFF = 1000 * 60 * 60 * 24 * 3;
 
+const MIN_PROBLEMS_TO_SHOW_USER = 2;
+
 class Chart {
-    constructor () {
-        this.matchId = /id=(\d+)/i.exec(location.href);
-        this.matchCompareto = /compareto=(\d+)/i.exec(location.href);
+    constructor (pageParser, dataRetriever) {
+        this.pageParser = pageParser;
+        this.dataRetriever = dataRetriever;
 
         this.ready = false;
         this.visible = false;
@@ -149,14 +151,15 @@ class Chart {
         $('#chart_loading_error_judge_id').html(message).slideDown(50);
     }
 
-    addUser (judgeID, name, color,
-            expectedAcceptedProblemsCount, isCritical, callback) {
-        this.linesExpected++;
-        var author = new Author(judgeID);
-        author.retrieve(expectedAcceptedProblemsCount, () => {
+    expectUsers (count) {
+        this.linesExpected += count;
+    }
+
+    addUser (judgeID, name, color, isCritical, callback) {
+        this.dataRetriever.retrieve(judgeID, author => {
             var line = new Line(author, name, color);
             line.make();
-            if (line.points.length < 2) {
+            if (line.points.length < MIN_PROBLEMS_TO_SHOW_USER) {
                 if (isCritical) {
                     this.hasCriticalError = true;
                     this.showQueryError();
@@ -223,7 +226,8 @@ class Chart {
             var name = match[2];
 
             var color = $('#chart_new_user_color').css('background-color');
-            this.addUser(judgeID, name, color, null, false, () => {
+            this.expectUsers(1);
+            this.addUser(judgeID, name, color, false, () => {
                 $('.chart_judge_id_input').val('');
                 $('#chart_new_user_color')
                         .css('background-color', randomColor());
@@ -238,19 +242,9 @@ class Chart {
     }
 
     areEnoughDataPresent () {
-        // Handle empty accounts
-        if (this.matchCompareto !== null) {
-            var bothCount = $('td.both').length - 1;
-            this.greenCount = $('td.accepted').length + bothCount - 1;
-            this.redCount = $('td.cmpac').length + bothCount - 1;
-            if (this.greenCount < 2 && this.redCount < 2)
-                return false;
-        } else {
-            this.problemsCount = $('td.accepted').length;
-            if (this.problemsCount < 2)
-                return false;
-        }
-        return true;
+        return this.pageParser.ourCount >= MIN_PROBLEMS_TO_SHOW_USER ||
+            (this.pageParser.rivalId !== null &&
+            this.pageParser.rivalCount >= MIN_PROBLEMS_TO_SHOW_USER);
     }
 
     createToggleLink (expectedVisibility) {
@@ -292,21 +286,17 @@ class Chart {
     }
 
     loadInitialData () {
-        var link = $('h2.author_name a');
-        var profileName = link.length ?
-            link.html() : $('h2.author_name').html();
-        if (this.matchCompareto !== null) {
-            var otherName =
-                    $('.author_comparison_legend .padright:first').html();
-            if (this.greenCount >= 2)
-                this.addUser(this.matchCompareto[1], otherName, COLOR_GREEN,
-                        this.greenCount, true);
-            if (this.redCount >= 2)
-                this.addUser(this.matchId[1], profileName, COLOR_RED,
-                        this.redCount, true);
-        } else
-            this.addUser(this.matchId[1], profileName, COLOR_GREEN,
-                    this.problemsCount, true);
+        var showUs = this.pageParser.ourCount >= MIN_PROBLEMS_TO_SHOW_USER;
+        var showRival = this.pageParser.rivalId !== null &&
+            this.pageParser.rivalCount >= MIN_PROBLEMS_TO_SHOW_USER;
+        this.expectUsers(showUs + showRival);
+
+        if (showUs)
+            this.addUser(this.pageParser.ourId, this.pageParser.ourName,
+                COLOR_GREEN, true);
+        if (showRival)
+            this.addUser(this.pageParser.rivalId, this.pageParser.rivalName,
+                COLOR_RED, true);
     }
 
     hide () {
@@ -349,5 +339,14 @@ class Chart {
                 return false;
         } catch (err) {}
         return true;
+    }
+
+    arrange () {
+        if (this.areEnoughDataPresent()) {
+            var expectedVisibility = this.getDefaultVisibility();
+            this.createToggleLink(expectedVisibility);
+            if (expectedVisibility)
+                $(() => this.show());
+        }
     }
 }

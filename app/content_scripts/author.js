@@ -46,10 +46,10 @@ class Author {
         }
     }
 
-    retrieve (expectedAcceptedProblemsCount, resultCallback, failCallback) {
+    retrieve (expectedAcProblems, resultCallback, failCallback) {
         this.loadFromCache();
         if (this.cacheAvailable && this.cachedAcceptedProblemsCount ==
-                expectedAcceptedProblemsCount) {
+                expectedAcProblems) {
             this.acceptedProblemsCount = this.cachedAcceptedProblemsCount;
             this.lastSubmitID = this.cachedLastSubmitID;
 
@@ -174,7 +174,7 @@ class Author {
             this.acceptedProblemsCount++;
         if (!alreadyAccepted ||
                 seconds < this.acceptedProblems[submit.problemNo])
-            this.acceptedProblems[problemNo] = seconds;
+            this.acceptedProblems[submit.problemNo] = seconds;
     }
 
     processSubmitsFrom (index) {

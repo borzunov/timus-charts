@@ -19,6 +19,8 @@ gulp.task('content_scripts', () => {
         'submit.js',
         'author.js',
         'line.js',
+        'page_parser.js',
+        'data_retriever.js',
         'chart.js',
 
         'content.js',

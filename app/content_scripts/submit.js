@@ -51,7 +51,7 @@ class Submit {
                 this.problemNo = archiveNo;
                 resultCallback(true);
             } else {
-                this.problemsFromContests[problemID] = "null";
+                Submit.problemsFromContests[problemID] = "null";
                 setValue(cacheKey, "null");
 
                 resultCallback(false);
