@@ -1,3 +1,5 @@
+const AC_FRACTION_TO_HIGHLIGHT = 0.1;
+
 class LastACHighlighter {
     constructor (pageParser, dataRetriever) {
         this.pageParser = pageParser;
@@ -6,13 +8,16 @@ class LastACHighlighter {
 
     show () {
         this.dataRetriever.retrieve(this.pageParser.ourId, author => {
+            var highlightedCount = Math.ceil(this.pageParser.ourCount *
+                AC_FRACTION_TO_HIGHLIGHT);
             var times = author.acceptedProblems;
             Object.keys(times)
                 .sort((a, b) => times[b] - times[a])
+                .slice(0, highlightedCount)
                 .forEach((probId, i) => {
                     var td = $('.attempt_list ' +
                         'td.accepted:contains("' + probId + '")');
-                    var hue = 120 + (1 - Math.min(1, i / 60)) * 60;
+                    var hue = 120 + (1 - i / highlightedCount) * 60;
                     td.css('background-color', 'hsl(' + hue + ', 100%, 78%)');
                 });
         });
