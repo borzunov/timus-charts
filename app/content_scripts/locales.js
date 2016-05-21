@@ -14,7 +14,7 @@ const LOCALES = {
         showChart: "Show chart",
         version: "version",
         wrongJudgeID: "There's no submits on this Judge ID",
-        highlightLastSolvedProblems: "Highlight last solved problems",
+        highlightLastSolvedProblems: "Mark recent ACs",
     },
     "ru": {
         add: "Добавить",
@@ -31,7 +31,7 @@ const LOCALES = {
         showChart: "Показать график",
         version: "версия",
         wrongJudgeID: "Не найдено посылок по этому Judge ID",
-        highlightLastSolvedProblems: "Выделить последние решенные задачи",
+        highlightLastSolvedProblems: "Выделять последние AC",
     },
 };
 
