@@ -4,10 +4,7 @@ class LastACHighlighter {
         this.dataRetriever = dataRetriever;
     }
 
-    arrange () {
-        if (this.pageParser.rivalId !== null)
-            return;
-
+    show () {
         this.dataRetriever.retrieve(this.pageParser.ourId, author => {
             var times = author.acceptedProblems;
             Object.keys(times)
@@ -19,5 +16,49 @@ class LastACHighlighter {
                     td.css('background-color', 'hsl(' + hue + ', 100%, 78%)');
                 });
         });
+    }
+
+    hide () {
+        $('.attempt_list td.accepted')
+            .css('background-color', 'hsl(120, 100%, 78%)');
+    }
+
+    arrange () {
+        if (this.pageParser.rivalId !== null)
+            return;
+
+        this.visible = this.getDefaultVisibility();
+        this.createToggler();
+        if (this.visible)
+            this.show();
+    }
+
+    createToggler () {
+        var checkbox = $('<input type="checkbox">');
+        var label = $('<label>')
+            .append(checkbox)
+            .append(document.createTextNode(locale.highlightLastSolvedProblems));
+        var td = $('<td align="right">').append(label);
+        $('.solved_map_links td').after(td);
+
+        checkbox.prop('checked', this.visible);
+        checkbox.change(() => this.setVisibility(checkbox.is(':checked')));
+    }
+
+    getDefaultVisibility () {
+        try {
+            if (getValue('highlight_last_solved_problems') === '0')
+                return false;
+        } catch (err) {}
+        return true;
+    }
+
+    setVisibility (visibility) {
+        setValue('highlight_last_solved_problems', visibility ? '1' : '0');
+        this.visible = visibility;
+        if (visibility)
+            this.show();
+        else
+            this.hide();
     }
 }
