@@ -154,7 +154,7 @@ class Chart {
 
     showJudgeIDError (message) {
         this.loading(false);
-        $('#chart_loading_error_judge_id').html(message).slideDown(50);
+        $('#chart_loading_error_judge_id').html(message).show();
     }
 
     expectUsers (count) {
@@ -240,7 +240,7 @@ class Chart {
 
     showLegend () {
         $('.chart_legend_open').hide();
-        $('.chart_legend').slideDown(150);
+        $('.chart_legend').show();
         $('.chart_judge_id_input').focus();
     }
 
@@ -310,7 +310,7 @@ class Chart {
         setValue('chart_visible', '0');
 
         $('.chart_toggle').html(locale.showChart);
-        $('#chart_place').slideUp(300);
+        $('#chart_place').hide();
     }
 
     show () {
@@ -319,6 +319,7 @@ class Chart {
         this.visible = true;
         setValue('chart_visible', '1');
 
+        $('.chart_toggle').html(locale.hideChart);
         if (!this.ready) {
             this.createChartPlace();
             this.loading(true);
@@ -331,10 +332,8 @@ class Chart {
             });
 
             this.ready = true;
-        } else {
-            $('.chart_toggle').html(locale.hideChart);
-            $('#chart_place').slideDown(300);
-        }
+        } else
+            $('#chart_place').show();
     }
 
     getDefaultVisibility () {
