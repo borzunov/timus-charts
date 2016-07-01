@@ -1,6 +1,17 @@
 Changelog
 =========
 
+v1.3
+----
+
+New features:
+
+- Highlighting of last AC (by [Slava Shklyaev](https://github.com/slava-sh))
+
+Changes:
+
+- The chart now appears immediately, without waiting until the browser has finished page loading, and without animation
+
 v1.2
 ----
 
