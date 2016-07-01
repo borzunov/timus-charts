@@ -266,7 +266,7 @@ class Chart {
     }
 
     createChartPlace () {
-        $('.author_links').after(TEMPLATE_CHART);
+        $('.author_links').after(substTemplateVariables(TEMPLATE_CHART, {}));
         $('#chart_new_user_color').click(function () {
             $(this).css('background-color', randomColor());
         });
