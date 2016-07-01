@@ -1,12 +1,14 @@
 const AC_FRACTION_TO_HIGHLIGHT = 0.1;
 
 class LastACHighlighter {
-    constructor (pageParser, dataRetriever) {
+    constructor (observer, pageParser, dataRetriever) {
+        this.observer = observer;
         this.pageParser = pageParser;
         this.dataRetriever = dataRetriever;
     }
 
     show () {
+        this.pageParser.parse();
         this.dataRetriever.retrieve(this.pageParser.ourId, author => {
             var highlightedCount = Math.ceil(this.pageParser.ourCount *
                 AC_FRACTION_TO_HIGHLIGHT);
@@ -28,13 +30,13 @@ class LastACHighlighter {
             .css('background-color', 'hsl(120, 100%, 78%)');
     }
 
-    createToggler () {
+    createToggler (prevCell) {
         var checkbox = $('<input type="checkbox">');
         var label = $('<label>')
             .append(checkbox)
             .append(document.createTextNode(locale.highlightLastSolvedProblems));
         var td = $('<td align="right">').append(label);
-        $('.solved_map_links td').after(td);
+        $(prevCell).after(td);
 
         checkbox.prop('checked', this.visible);
         checkbox.change(() => this.setVisibility(checkbox.is(':checked')));
@@ -58,13 +60,13 @@ class LastACHighlighter {
     }
 
     arrange () {
-        $(() => {
-            this.pageParser.parse();
-            if (this.pageParser.rivalId !== null)
-                return;
-
+        if (this.pageParser.rivalId !== null)
+            return;
+        this.observer.forEach('.solved_map_links td:first-child', elem => {
             this.visible = this.getDefaultVisibility();
-            this.createToggler();
+            this.createToggler(elem);
+        });
+        $(() => {
             if (this.visible)
                 this.show();
         });

@@ -1,12 +1,6 @@
 class PageParser {
     constructor () {
         this.parsed = false;
-    }
-
-    parse () {
-        if (this.parsed)
-            return;
-        this.parsed = true;
 
         var match = /id=(\d+)/i.exec(location.href);
         var id = match !== null ? match[1] : null;
@@ -19,6 +13,12 @@ class PageParser {
             this.ourId = compareto;
             this.rivalId = id;
         }
+    }
+
+    parse () {
+        if (this.parsed)
+            return;
+        this.parsed = true;
 
         var link = $('h2.author_name a');
         var profileName = link.length ?

@@ -250,9 +250,9 @@ class Chart {
             this.pageParser.rivalCount >= MIN_PROBLEMS_TO_SHOW_USER);
     }
 
-    createToggleLink (expectedVisibility) {
+    createToggleLink (authorLinksElem, expectedVisibility) {
         var label = expectedVisibility ? locale.hideChart : locale.showChart;
-        $('.author_links')
+        $(authorLinksElem)
             .append(substTemplateVariables(TEMPLATE_TOGGLE_LINK, {
                 label: label,
             }));
@@ -345,9 +345,9 @@ class Chart {
     }
 
     arrange () {
-        this.observer.forEach('.author_links', () => {
+        this.observer.forEach('.author_links', elem => {
             var visible = this.getDefaultVisibility();
-            this.createToggleLink(visible);
+            this.createToggleLink(elem, visible);
             if (visible)
                 this.show();
         });
