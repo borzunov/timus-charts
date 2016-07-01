@@ -19,18 +19,13 @@ var TEMPLATE_USER_SEVERAL_LINES = '<td class="chart_user_problems_count">{% prob
 <td><a href="#" class="chart_user_remove">' + locale.del + '</a></td>';
 var TEMPLATE_USER_END = '</tr>';
 
-var TEMPLATE_CHART = '<div id="chart_place" style="display: none;">\
+var TEMPLATE_CHART = '<div id="chart_place">\
 <div id="chart_loading" class="chart_box">\
     <div class="chart_comment chart_version">\
         Timus Charts, ' + locale.version + ' ' + SCRIPT_VERSION + '\
     </div>\
     <div class="chart_spin"></div>\
-    <div id="chart_query_error" style="display: none;">\
-        <div class="chart_comment">\
-            ' + locale.queryFailed + '<br />\
-            ' + locale.refreshPage + '\
-        </div>\
-    </div>\
+    <div id="chart_error" class="chart_comment" style="display: none;"></div>\
 </div>\
 <div id="chart" class="chart_box" style="display: none;"></div>\
 <div class="chart_legend_box" style="display: none;">\

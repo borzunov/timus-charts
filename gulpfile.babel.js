@@ -8,13 +8,13 @@ const $ = gulpLoadPlugins();
 const DEBUG = true;
 
 gulp.task('content_scripts', () => {
-    // FIXME: don't transform metadata.js
     return gulp.src([
         'metadata.js',
         'compat.js',
         'styles.js',
         'locales.js',
         'templates.js',
+        'element_observer.js',
 
         'submit.js',
         'author.js',
@@ -22,6 +22,7 @@ gulp.task('content_scripts', () => {
         'data_retriever.js',
 
         'line.js',
+        'spin.js',
         'chart.js',
 
         'last_ac_highlighter.js',

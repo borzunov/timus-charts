@@ -20,7 +20,6 @@
             "jquery.min.js",
             "jquery.jqplot.min.js",
             "jqplot.dateAxisRenderer.min.js",
-            "spin.min.js",
             "timus.user.js"
         ],
         "include_globs": [
@@ -30,6 +29,6 @@
         "matches": [
             "http://acm.timus.ru/author.aspx*"
         ],
-        "run_at": "document_end"
+        "run_at": "document_start"
     }]
 }

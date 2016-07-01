@@ -1,5 +1,13 @@
 class PageParser {
     constructor () {
+        this.parsed = false;
+    }
+
+    parse () {
+        if (this.parsed)
+            return;
+        this.parsed = true;
+
         var match = /id=(\d+)/i.exec(location.href);
         var id = match !== null ? match[1] : null;
         match = /compareto=(\d+)/i.exec(location.href);

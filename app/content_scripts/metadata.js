@@ -15,7 +15,6 @@
 // @require      http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require      http://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/jquery.jqplot.min.js
 // @require      http://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.dateAxisRenderer.min.js
-// @require      http://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.min.js
 // ==/UserScript==
 
 var SCRIPT_VERSION = '1.3';

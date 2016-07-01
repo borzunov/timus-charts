@@ -14,7 +14,8 @@ const XAXIS_CRITICAL_DIFF = 1000 * 60 * 60 * 24 * 3;
 const MIN_PROBLEMS_TO_SHOW_USER = 2;
 
 class Chart {
-    constructor (pageParser, dataRetriever) {
+    constructor (observer, pageParser, dataRetriever) {
+        this.observer = observer;
         this.pageParser = pageParser;
         this.dataRetriever = dataRetriever;
 
@@ -24,9 +25,8 @@ class Chart {
         this.lines = [];
         this.linesExpected = 0;
 
-        this.animateComplete = false;
         this.loadingState = false;
-        this.hasCriticalError = false;
+        this.errorShown = false;
     }
 
     loading (state) {
@@ -47,13 +47,19 @@ class Chart {
         return this.loadingState;
     }
 
-    showQueryError () {
+    showError (html) {
+        this.errorShown = true;
         this.loading(false);
         $('.chart_legend_open').hide();
         $('.chart_legend').hide();
         $('#chart').hide();
         $('#chart_loading').show();
-        $('#chart_query_error').show();
+        $('#chart_error').html(html);
+        $('#chart_error').show();
+    }
+
+    showQueryError () {
+        this.showError(locale.queryFailed + '<br />' + locale.refreshPage);
     }
 
     static getLegendRowID (line) {
@@ -160,10 +166,9 @@ class Chart {
             var line = new Line(author, name, color);
             line.make();
             if (line.points.length < MIN_PROBLEMS_TO_SHOW_USER) {
-                if (isCritical) {
-                    this.hasCriticalError = true;
+                if (isCritical)
                     this.showQueryError();
-                } else
+                else
                     this.showJudgeIDError(locale.judgeIDNotEnoughOfAccepted);
                 this.linesExpected--;
                 return;
@@ -171,16 +176,14 @@ class Chart {
 
             this.lines.push(line);
             if (this.lines.length === this.linesExpected) {
-                if (this.animateComplete)
-                    this.redraw();
+                this.redraw();
                 if (callback !== undefined)
                     callback();
             }
         }, () => {
-            if (isCritical) {
-                this.hasCriticalError = true;
+            if (isCritical)
                 this.showQueryError();
-            } else
+            else
                 this.showJudgeIDError(locale.queryFailed);
             this.linesExpected--;
         });
@@ -282,6 +285,7 @@ class Chart {
             event.preventDefault();
         });
 
+        var Spinner = makeSpinner();
         this.spinner = new Spinner();
     }
 
@@ -315,22 +319,22 @@ class Chart {
         this.visible = true;
         setValue('chart_visible', '1');
 
-        $('.chart_toggle').html(locale.hideChart);
-        if (!this.ready)
-            this.createChartPlace();
-        this.loading(true);
         if (!this.ready) {
-            this.loadInitialData();
-            this.ready = true;
-        }
-        $('#chart_place')
-            .width($('.solved_map_box').width())
-            .slideDown(300, () => {
-                this.animateComplete = true;
-                if (!this.hasCriticalError &&
-                        this.lines.length === this.linesExpected)
-                    this.redraw();
+            this.createChartPlace();
+            this.loading(true);
+            $(() => {
+                this.pageParser.parse();
+                if (this.areEnoughDataPresent())
+                    this.loadInitialData();
+                else
+                    this.showError(locale.notEnoughData);
             });
+
+            this.ready = true;
+        } else {
+            $('.chart_toggle').html(locale.hideChart);
+            $('#chart_place').slideDown(300);
+        }
     }
 
     getDefaultVisibility () {
@@ -342,11 +346,11 @@ class Chart {
     }
 
     arrange () {
-        if (this.areEnoughDataPresent()) {
-            var expectedVisibility = this.getDefaultVisibility();
-            this.createToggleLink(expectedVisibility);
-            if (expectedVisibility)
-                $(() => this.show());
-        }
+        this.observer.forEach('.author_links', () => {
+            var visible = this.getDefaultVisibility();
+            this.createToggleLink(visible);
+            if (visible)
+                this.show();
+        });
     }
 }

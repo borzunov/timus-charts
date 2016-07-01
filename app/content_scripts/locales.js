@@ -15,6 +15,7 @@ const LOCALES = {
         version: "version",
         wrongJudgeID: "There's no submits on this Judge ID",
         highlightLastSolvedProblems: "Mark recent ACs",
+        notEnoughData: "Too little data for the chart",
     },
     "ru": {
         add: "Добавить",
@@ -32,11 +33,13 @@ const LOCALES = {
         version: "версия",
         wrongJudgeID: "Не найдено посылок по этому Judge ID",
         highlightLastSolvedProblems: "Выделять последние AC",
+        notEnoughData: "Слишком мало данных для графика",
     },
 };
 
-function isRussianLocale() {
-    return /Задачи/.test($('body').html());
-}
+var locale = LOCALES.en;
 
-var locale = LOCALES[isRussianLocale() ? "ru" : "en"];
+function ensureLocaleUpdate(observer) {
+    observer.forEach('.panel a[href="/news.aspx"]', newsLink =>
+        locale = LOCALES[newsLink.innerText === 'Site news' ? 'en' : 'ru']);
+}

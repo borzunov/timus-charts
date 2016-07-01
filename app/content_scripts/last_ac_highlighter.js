@@ -28,16 +28,6 @@ class LastACHighlighter {
             .css('background-color', 'hsl(120, 100%, 78%)');
     }
 
-    arrange () {
-        if (this.pageParser.rivalId !== null)
-            return;
-
-        this.visible = this.getDefaultVisibility();
-        this.createToggler();
-        if (this.visible)
-            this.show();
-    }
-
     createToggler () {
         var checkbox = $('<input type="checkbox">');
         var label = $('<label>')
@@ -65,5 +55,18 @@ class LastACHighlighter {
             this.show();
         else
             this.hide();
+    }
+
+    arrange () {
+        $(() => {
+            this.pageParser.parse();
+            if (this.pageParser.rivalId !== null)
+                return;
+
+            this.visible = this.getDefaultVisibility();
+            this.createToggler();
+            if (this.visible)
+                this.show();
+        });
     }
 }
