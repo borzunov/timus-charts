@@ -1,7 +1,6 @@
 var isGreasemonkey = (
     typeof GM_getValue !== "undefined" &&
-    typeof GM_setValue !== "undefined" &&
-    typeof GM_xmlhttpRequest !== "undefined"
+    typeof GM_setValue !== "undefined"
 );
 var isChrome = (typeof chrome !== "undefined");
 

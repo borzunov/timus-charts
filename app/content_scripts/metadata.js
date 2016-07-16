@@ -11,7 +11,6 @@
 // @match        http://acm.timus.ru/author.aspx*
 // @grant        GM_getValue
 // @grant        GM_setValue
-// @grant        GM_xmlhttpRequest
 // @require      http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // @require      http://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/jquery.jqplot.min.js
 // @require      http://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.dateAxisRenderer.min.js
