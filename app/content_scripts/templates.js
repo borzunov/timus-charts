@@ -1,8 +1,8 @@
 function substTemplateVariables(template, variables) {
-    for (var name in locale)
+    for (const name in locale)
         template = template.replace(
             new RegExp('\{% locale.' + name + ' %\}', 'g'), locale[name]);
-    for (var name in variables)
+    for (const name in variables)
         template = template.replace(
             new RegExp('\{% ' + name + ' %\}', 'g'), variables[name]);
     return template;

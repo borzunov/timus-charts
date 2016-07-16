@@ -153,17 +153,12 @@ class Author {
             }
 
             var isConsidered = submit.isConsidered();
-            if (isConsidered === true)
-                this.considerSubmit(submit);
-            else
             if (isConsidered === null) {
-                submit.queryWhetherConsidered(result => {
-                    if (result)
-                        this.considerSubmit(submit);
-                    this.processSubmitsFrom(index + 1);
-                }, this.failCallback);
+                this.queryAndProcessSubmitsFrom(index);
                 return;
             }
+            if (isConsidered === true)
+                this.considerSubmit(submit);
             index++;
         }
 
@@ -175,5 +170,14 @@ class Author {
         } else
             this.parseSubmitsPage(
                     this.submits[this.submits.length - 1].id - 1);
+    }
+
+    queryAndProcessSubmitsFrom (index) {
+        var submit = this.submits[index];
+        submit.queryWhetherConsidered(result => {
+            if (result)
+                this.considerSubmit(submit);
+            this.processSubmitsFrom(index + 1);
+        }, this.failCallback);
     }
 }
