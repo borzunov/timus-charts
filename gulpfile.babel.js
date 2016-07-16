@@ -37,6 +37,12 @@ gulp.task('content_scripts', () => {
         .pipe(gulp.dest('dist'));
 });
 
+gulp.task('lint', () => {
+    return gulp.src(['**/*.js', '!spin.js'], {'cwd': 'app/content_scripts'})
+        .pipe($.jshint())
+        .pipe($.jshint.reporter('default'));
+});
+
 gulp.task('extras', () => {
     return gulp.src([
         'app/*.js',
@@ -47,11 +53,11 @@ gulp.task('extras', () => {
 });
 
 gulp.task('watch', ['build'], () => {
-    gulp.watch('app/content_scripts/**/*.js', ['content_scripts']);
+    gulp.watch('app/content_scripts/**/*.js', ['content_scripts', 'lint']);
 });
 
 gulp.task('clean', cb => del(['dist'], cb));
 
-gulp.task('build', ['content_scripts', 'extras']);
+gulp.task('build', ['content_scripts', 'extras', 'lint']);
 
 gulp.task('default', ['clean'], cb => runSequence('build', cb));
