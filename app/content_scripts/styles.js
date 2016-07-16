@@ -115,7 +115,7 @@ float: right;\
 float: right;\
 }';
 
-function ensureStyleAdding(observer) {
+function addStyles(observer) {
     observer.forEach('head', () => {
         for (var style of [JQPLOT_STYLE, EXTENSION_STYLE]) {
             var elem = document.createElement('style');

@@ -39,7 +39,9 @@ const LOCALES = {
 
 var locale = LOCALES.en;
 
-function ensureLocaleUpdate(observer) {
-    observer.forEach('.panel a[href="/news.aspx"]', newsLink =>
-        locale = LOCALES[newsLink.innerText === 'Site news' ? 'en' : 'ru']);
+function updateLocale(observer, callback) {
+    observer.forEachTextIn('.panel a[href="/news.aspx"]', newsLabel => {
+        locale = LOCALES[newsLabel.textContent === 'Site news' ? 'en' : 'ru'];
+        callback();
+    });
 }
