@@ -32,6 +32,7 @@ gulp.task('content_scripts', () => {
         .pipe($.if(DEBUG, $.sourcemaps.init()))
         .pipe($.babel())
         .pipe($.concat('timus.user.js'))
+        .pipe($.uglify())
         .pipe($.if(DEBUG, $.sourcemaps.write('.')))
         .pipe(gulp.dest('dist'));
 });

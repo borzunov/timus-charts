@@ -11,6 +11,7 @@
     "gulp-if": "^2.0.0",
     "gulp-load-plugins": "~1.2.0",
     "gulp-sourcemaps": "^2.0.0-alpha",
+    "gulp-uglify": "^1.5.4",
     "run-sequence": "~1.1.5"
   }
 }
