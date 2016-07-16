@@ -63,33 +63,6 @@ class Author {
         this.parseSubmitsPage(null);
     }
 
-    static _getPublicSubmitsPage_Chrome (url, resultCallback, failCallback) {
-        chrome.runtime.sendMessage({action: 'stash_cookies'}, () => {
-            $.get(url).then(resultCallback, failCallback);
-            chrome.runtime.sendMessage({action: 'expose_cookies'});
-        });
-    }
-
-    static _getPublicSubmitsPage_Greasemonkey (
-            query, resultCallback, failCallback) {
-        GM_xmlhttpRequest({
-            method: "GET",
-            url: 'http://acm.timus.ru./textstatus.aspx' + query,
-            headers: {
-                'Host': 'acm.timus.ru',
-            },
-            onload (response) {
-                resultCallback(response.responseText);
-            },
-            onabort (response) {
-                failCallback();
-            },
-            onerror (response) {
-                failCallback();
-            },
-        });
-    }
-
     getSubmitsPage (query, resultCallback, failCallback) {
         var url = 'http://acm.timus.ru/textstatus.aspx' + query;
         if (!this.hasDeletedProblems) {
@@ -104,20 +77,11 @@ class Author {
             }).fail(failCallback);
             return;
         }
-        // Timus API throws an exception if the author have submits on
-        // deleted problems (e.g. in private contests).
 
-        if (isChrome)
-            Author._getPublicSubmitsPage_Chrome(
-                    url, resultCallback, failCallback);
-        else
-        if (isGreasemonkey)
-            Author._getPublicSubmitsPage_Greasemonkey(
-                    query, resultCallback, failCallback);
-        else
-            // If there's no appropriate workaround,
-            // just skip additional problem spaces
-            $.get(url + '&space=1').then(resultCallback, failCallback);
+        // Timus API used to throw an exception if the author have submits on
+        // deleted problems (e.g. in private contests). If we got an exception,
+        // just skip additional problem spaces.
+        $.get(url + '&space=1').then(resultCallback, failCallback);
     }
 
     parseSubmitsPage (fromSubmitID) {

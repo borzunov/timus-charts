@@ -11,10 +11,6 @@
         "cookies",
         "http://acm.timus.ru/author.aspx*"
     ],
-    "background": {
-        "scripts": ["background.js"],
-        "persistent": false
-    },
     "content_scripts": [{
         "js": [
             "jquery.min.js",
