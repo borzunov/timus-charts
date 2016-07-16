@@ -31,8 +31,8 @@ var TEMPLATE_CHART = `<div id="chart_place">
     <div id="chart_error" class="chart_comment" style="display: none;"></div>
 </div>
 <div id="chart" class="chart_box" style="display: none;"></div>
-<div class="chart_legend_box" style="display: none;">
-    <a href="#" class="chart_legend_open">
+<div class="chart_legend_box">
+    <a href="#" class="chart_legend_open" style="display: none;">
         {% locale.addUsers %}
     </a>
     <div class="chart_legend" style="display: none;">

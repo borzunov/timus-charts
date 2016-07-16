@@ -122,7 +122,8 @@ class Chart {
         var points = this.lines.map(line => line.points).reverse();
         var colors = this.lines.map(line => line.color).reverse();
 
-        $('.chart_legend_box').show();
+        if (!$('.chart_legend').is(':visible'))
+            $('.chart_legend_open').show();
         $('#chart').html('');
         this.loading(false);
         var plot = $.jqplot('chart', points, {
