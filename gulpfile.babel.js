@@ -32,10 +32,17 @@ gulp.task('content_scripts', () => {
         .pipe($.if(DEBUG, $.sourcemaps.init()))
         .pipe($.babel())
         .pipe($.concat('timus.user.js'))
-        .pipe($.uglify())
+        .pipe($.uglify({
+            preserveComments: (_, comment) => isMetadata(comment),
+        }))
         .pipe($.if(DEBUG, $.sourcemaps.write('.')))
         .pipe(gulp.dest('dist'));
 });
+
+function isMetadata(commentNode) {
+    var value = commentNode.value.trimLeft();
+    return value.startsWith('=') || value.startsWith('@');
+}
 
 gulp.task('lint', () => {
     return gulp.src(['**/*.js', '!spin.js'], {'cwd': 'app/content_scripts'})
