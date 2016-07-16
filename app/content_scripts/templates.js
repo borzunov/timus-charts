@@ -38,7 +38,7 @@ var TEMPLATE_CHART = `<div id="chart_place">
     <div class="chart_legend" style="display: none;">
         <table class="chart_users_table"></table>
         <div class="chart_new_user">
-            <div id="chart_new_user_color" class="chart_user_color" style="background: ' + COLOR_BLUE + ';"></div>
+            <div id="chart_new_user_color" class="chart_user_color" style="background: ${COLOR_BLUE};"></div>
             {% locale.judgeIDLabel %} <input type="text" class="chart_judge_id_input" />
             <a href="#" class="chart_user_add">{% locale.add %}</a>
             <div id="chart_loading_error_judge_id" class="chart_comment" style="display: none;"></div>
