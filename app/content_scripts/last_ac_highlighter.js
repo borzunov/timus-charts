@@ -1,4 +1,5 @@
-const AC_FRACTION_TO_HIGHLIGHT = 0.1;
+const SECS_PER_DAY = 60 * 60 * 24;
+const SECS_TO_HIGHLIGHT = 60 * SECS_PER_DAY;
 
 class LastACHighlighter {
     constructor (observer, pageParser, dataRetriever) {
@@ -9,19 +10,20 @@ class LastACHighlighter {
 
     show () {
         this.pageParser.parse();
+        var curTime = Date.now() / MSEC_PER_SEC;
         this.dataRetriever.retrieve(this.pageParser.ourId, author => {
-            var highlightedCount = Math.ceil(this.pageParser.ourCount *
-                AC_FRACTION_TO_HIGHLIGHT);
-            var times = author.acceptedProblems;
-            Object.keys(times)
-                .sort((a, b) => times[b] - times[a])
-                .slice(0, highlightedCount)
-                .forEach((probId, i) => {
-                    var td = $('.attempt_list ' +
-                        'td.accepted:contains("' + probId + '")');
-                    var hue = 120 + (1 - i / highlightedCount) * 60;
-                    td.css('background-color', 'hsl(' + hue + ', 100%, 78%)');
-                });
+            var acTimes = author.acceptedProblems;
+            for (var problem of Object.keys(acTimes)
+                .sort((a, b) => acTimes[b] - acTimes[a])) {
+                var acTime = acTimes[problem];
+                if (curTime - acTime > SECS_TO_HIGHLIGHT)
+                    break;
+                var ratio = (curTime - acTime) / SECS_TO_HIGHLIGHT;
+
+                var td = $(`.attempt_list td.accepted:contains("${problem}")`);
+                var hue = 120 + (1 - ratio) * 60;
+                td.css('background-color', `hsl(${hue}, 100%, 78%)`);
+            }
         });
     }
 

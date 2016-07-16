@@ -32,7 +32,7 @@ const LOCALES = {
         showChart: "Показать график",
         version: "версия",
         wrongJudgeID: "Не найдено посылок по этому Judge ID",
-        highlightLastSolvedProblems: "Выделять последние AC",
+        highlightLastSolvedProblems: "Выделять недавние AC",
         notEnoughData: "Слишком мало данных для графика",
     },
 };

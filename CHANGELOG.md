@@ -6,11 +6,12 @@ v1.3
 
 New features:
 
-- Highlighting of last AC (by [Slava Shklyaev](https://github.com/slava-sh))
+- Highlighting problems accepted in recent two months
 
 Changes:
 
-- The chart now appears immediately, without waiting until the browser has finished page loading, and without animation
+- The chart place now appears immediately, without waiting until the browser has finished page loading
+- Removed all animation
 
 v1.2
 ----
