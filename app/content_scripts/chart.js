@@ -333,8 +333,15 @@ class Chart {
             });
 
             this.ready = true;
-        } else
+        } else {
             $('#chart_place').show();
+            if (!this.loadingState) {
+                // If the last redrawing happened when the chart was hidden,
+                // jqPlot wouldn't accomplish it correctly,
+                // so we need run to redraw the chart again
+                this.redraw();
+            }
+        }
     }
 
     getDefaultVisibility () {
