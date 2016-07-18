@@ -6,6 +6,7 @@ import runSequence from 'run-sequence';
 const $ = gulpLoadPlugins();
 
 let debug = true;
+let uglify = true;
 
 gulp.task('content_scripts', () => {
     return gulp.src([
@@ -32,9 +33,9 @@ gulp.task('content_scripts', () => {
         .pipe($.if(debug, $.sourcemaps.init()))
         .pipe($.babel())
         .pipe($.concat('timus.user.js'))
-        .pipe($.uglify({
+        .pipe($.if(uglify, $.uglify({
             preserveComments: (_, comment) => isMetadata(comment),
-        }))
+        })))
         .pipe($.if(debug, $.sourcemaps.write('.')))
         .pipe(gulp.dest('dist'));
 });
@@ -67,12 +68,6 @@ gulp.task('clean', cb => del(['dist'], cb));
 
 gulp.task('build', ['content_scripts', 'extras', 'lint']);
 
-gulp.task('package-userjs', () => {
-    const manifest = require('./dist/manifest.json');
-    return gulp.src('dist/timus.user.js')
-        .pipe(gulp.dest(`./releases/v${manifest.version}/userjs`));
-});
-
 gulp.task('package-chrome', () => {
     const manifest = require('./dist/manifest.json');
     return gulp.src('dist/**/*')
@@ -80,9 +75,18 @@ gulp.task('package-chrome', () => {
         .pipe(gulp.dest(`./releases/v${manifest.version}/chrome`));
 });
 
+gulp.task('package-userjs', () => {
+    const manifest = require('./dist/manifest.json');
+    return gulp.src('dist/timus.user.js')
+        .pipe(gulp.dest(`./releases/v${manifest.version}/userjs`));
+});
+
 gulp.task('default', ['clean'], cb => runSequence('build', cb));
 
-gulp.task('package', ['clean'], () => {
+gulp.task('package', cb => {
     debug = false;
-    runSequence('build', ['package-userjs', 'package-chrome']);
+    runSequence('clean', 'build', 'package-chrome', () => {
+        uglify = false;
+        runSequence('clean', 'build', 'package-userjs', cb);
+    });
 });
