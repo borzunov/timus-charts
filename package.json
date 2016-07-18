@@ -13,6 +13,7 @@
     "gulp-load-plugins": "~1.2.0",
     "gulp-sourcemaps": "^2.0.0-alpha",
     "gulp-uglify": "^1.5.4",
+    "gulp-zip": "^3.2.0",
     "jshint": "^2.9.2",
     "run-sequence": "~1.1.5"
   }

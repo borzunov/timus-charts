@@ -5,7 +5,7 @@ import runSequence from 'run-sequence';
 
 const $ = gulpLoadPlugins();
 
-const DEBUG = true;
+let debug = true;
 
 gulp.task('content_scripts', () => {
     return gulp.src([
@@ -29,18 +29,18 @@ gulp.task('content_scripts', () => {
 
         'content.js',
     ], {'cwd': 'app/content_scripts'})
-        .pipe($.if(DEBUG, $.sourcemaps.init()))
+        .pipe($.if(debug, $.sourcemaps.init()))
         .pipe($.babel())
         .pipe($.concat('timus.user.js'))
         .pipe($.uglify({
             preserveComments: (_, comment) => isMetadata(comment),
         }))
-        .pipe($.if(DEBUG, $.sourcemaps.write('.')))
+        .pipe($.if(debug, $.sourcemaps.write('.')))
         .pipe(gulp.dest('dist'));
 });
 
 function isMetadata(commentNode) {
-    var value = commentNode.value.trimLeft();
+    const value = commentNode.value.trimLeft();
     return value.startsWith('=') || value.startsWith('@');
 }
 
@@ -67,4 +67,22 @@ gulp.task('clean', cb => del(['dist'], cb));
 
 gulp.task('build', ['content_scripts', 'extras', 'lint']);
 
+gulp.task('package-userjs', () => {
+    const manifest = require('./dist/manifest.json');
+    return gulp.src('dist/timus.user.js')
+        .pipe(gulp.dest(`./releases/v${manifest.version}/userjs`));
+});
+
+gulp.task('package-chrome', () => {
+    const manifest = require('./dist/manifest.json');
+    return gulp.src('dist/**/*')
+        .pipe($.zip('timus-charts.zip'))
+        .pipe(gulp.dest(`./releases/v${manifest.version}/chrome`));
+});
+
 gulp.task('default', ['clean'], cb => runSequence('build', cb));
+
+gulp.task('package', ['clean'], () => {
+    debug = false;
+    runSequence('build', ['package-userjs', 'package-chrome']);
+});
