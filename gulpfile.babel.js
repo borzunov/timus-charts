@@ -69,17 +69,24 @@ gulp.task('clean', cb => del(['dist'], cb));
 gulp.task('build', ['content_scripts', 'extras', 'lint']);
 
 gulp.task('package-chrome', () => {
-    const manifest = require('./dist/manifest.json');
     return gulp.src('dist/**/*')
         .pipe($.zip('timus-charts.zip'))
-        .pipe(gulp.dest(`./releases/v${manifest.version}/chrome`));
+        .pipe(gulp.dest(`./releases/v${getVersion()}/chrome`));
+});
+
+gulp.task('package-opera', () => {
+    return gulp.src('dist/**/*')
+        .pipe(gulp.dest(`./releases/v${getVersion()}/opera/timus-charts`));
 });
 
 gulp.task('package-userjs', () => {
-    const manifest = require('./dist/manifest.json');
     return gulp.src('dist/timus.user.js')
-        .pipe(gulp.dest(`./releases/v${manifest.version}/userjs`));
+        .pipe(gulp.dest(`./releases/v${getVersion()}/userjs`));
 });
+
+function getVersion() {
+    return require('./dist/manifest.json').version;
+}
 
 gulp.task('default', ['clean'], cb => runSequence('build', cb));
 
@@ -87,6 +94,6 @@ gulp.task('package', cb => {
     debug = false;
     runSequence('clean', 'build', 'package-chrome', () => {
         uglify = false;
-        runSequence('clean', 'build', 'package-userjs', cb);
+        runSequence('clean', 'build', ['package-opera', 'package-userjs'], cb);
     });
 });
