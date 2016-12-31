@@ -9,6 +9,7 @@ const EXTENSION_STYLE = `#chart {
 
 .chart_box {
     height: 255px;
+    position: relative;
 }
 
 .chart_comment {
@@ -114,6 +115,12 @@ const EXTENSION_STYLE = `#chart {
 
 .chart_version {
     float: right;
+}
+
+.chart_copyright {
+    position: absolute;
+    bottom: 10px;
+    right: 0;
 }`;
 
 function addStyles(observer) {

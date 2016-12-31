@@ -2,6 +2,7 @@ const LOCALES = {
     "en": {
         add: "Add",
         addUsers: "Add users",
+        author: "Alexander Borzunov",
         del: "Delete",
         hideChart: "Hide chart",
         judgeIDDoesntExist: "This user doesn't exist!",
@@ -20,6 +21,7 @@ const LOCALES = {
     "ru": {
         add: "Добавить",
         addUsers: "Добавить пользователей",
+        author: "Александр Борзунов",
         del: "Удалить",
         hideChart: "Скрыть график",
         judgeIDDoesntExist: "Такого пользователя не существует!",

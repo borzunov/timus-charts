@@ -27,6 +27,8 @@ var TEMPLATE_CHART = `<div id="chart_place">
     <div class="chart_comment chart_version">
         Timus Charts, {% locale.version %} ${SCRIPT_VERSION}
     </div>
+    <div class="chart_comment chart_copyright">&copy; {% locale.author %}</div>
+
     <div class="chart_spin"></div>
     <div id="chart_error" class="chart_comment" style="display: none;"></div>
 </div>
