@@ -19,21 +19,21 @@ Built with [jqPlot](http://jqplot.com/).
 Installation
 ------------
 
-![ ](https://raw.githubusercontent.com/alrra/browser-logos/master/chrome/chrome_16x16.png) **Google Chrome**
+![ ](https://raw.githubusercontent.com/alrra/browser-logos/4df679ae115108c063b646c3319ec9f431c31837/src/chrome/chrome_16x16.png) **Google Chrome**
 
 * The extension is available in [Chrome Web Store](https://chrome.google.com/webstore/detail/timus-charts/jholigcfjhipjahcjoccgkfjikkcekki).
 
-![ ](https://raw.githubusercontent.com/alrra/browser-logos/master/firefox/firefox_16x16.png) **Firefox**
+![ ](https://raw.githubusercontent.com/alrra/browser-logos/4df679ae115108c063b646c3319ec9f431c31837/src/firefox/firefox_16x16.png) **Firefox**
 
 1. Install [Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/).
 
 2. The extension will be available for installation on [the page on OpenUserJS.org](https://openuserjs.org/scripts/hx0/Timus_Charts).
 
-![ ](https://raw.githubusercontent.com/alrra/browser-logos/master/opera/opera_16x16.png) **Opera** > 12 and ![ ](https://raw.githubusercontent.com/alrra/browser-logos/master/yandex/yandex_16x16.png) **Yandex.Browser**
+![ ](https://raw.githubusercontent.com/alrra/browser-logos/4df679ae115108c063b646c3319ec9f431c31837/src/opera/opera_16x16.png) **Opera** > 12 and ![ ](https://raw.githubusercontent.com/alrra/browser-logos/4df679ae115108c063b646c3319ec9f431c31837/src/yandex/yandex_16x16.png) **Yandex.Browser**
 
 * The extension is available on [Opera Add-ons](https://addons.opera.com/extensions/details/timus-charts/).
 
-![ ](https://raw.githubusercontent.com/alrra/browser-logos/master/safari/safari_16x16.png) **Safari**
+![ ](https://raw.githubusercontent.com/alrra/browser-logos/4df679ae115108c063b646c3319ec9f431c31837/src/safari/safari_16x16.png) **Safari**
 
 1. Install [Tampermonkey for Safari](https://tampermonkey.net/index.php?ext=dhdg&browser=safari).
 
