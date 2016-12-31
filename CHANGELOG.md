@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.4
+----
+
+Show copyright during loading.
+
 v1.3
 ----
 
