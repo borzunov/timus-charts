@@ -76,7 +76,8 @@ gulp.task('package-chrome', () => {
 
 gulp.task('package-opera', () => {
     return gulp.src('dist/**/*')
-        .pipe(gulp.dest(`./releases/v${getVersion()}/opera/timus-charts`));
+        .pipe($.zip('timus-charts.zip'))
+        .pipe(gulp.dest(`./releases/v${getVersion()}/opera`));
 });
 
 gulp.task('package-userjs', () => {
