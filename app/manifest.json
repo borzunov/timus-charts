@@ -8,7 +8,6 @@
         "128": "icon.png"
     },
     "permissions": [
-        "cookies",
         "http://acm.timus.ru/author.aspx*"
     ],
     "content_scripts": [{
