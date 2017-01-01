@@ -22,7 +22,7 @@ class PageParser {
 
         var link = $('h2.author_name a');
         var profileName = link.length ?
-            link.html() : $('h2.author_name').html();
+            link.html() : $('h2.author_name').contents().get(0).nodeValue;
         if (this.rivalId !== null) {
             var bothCount = $('td.both').length - 1;
             this.ourCount = $('td.accepted').length + bothCount - 1;

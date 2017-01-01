@@ -4,7 +4,7 @@ Changelog
 v1.4
 ----
 
-Show copyright during loading.
+Show copyright during loading, fix minor issues.
 
 v1.3
 ----
