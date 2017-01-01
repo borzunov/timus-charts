@@ -42,7 +42,7 @@ Installation
 Authors
 -------
 
-Copyright (c) 2012-2013, 2015-2016 Alexander Borzunov
+Copyright (c) 2012-2013, 2015-2017 Alexander Borzunov
 
 Highlighting of recent AC by [Slava Shklyaev](https://github.com/slava-sh).
 
