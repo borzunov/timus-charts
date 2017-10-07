@@ -3,7 +3,7 @@
     "name": "Timus Charts",
     "description": "Adds charts to Timus Online Judge profiles",
     "author": "Alexander Borzunov",
-    "version": "1.4",
+    "version": "1.5",
     "icons": {
         "128": "icon.png"
     },

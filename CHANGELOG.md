@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.5
+----
+
+Support http://timus.online and http://acm-judge.urfu.ru domains.
+
 v1.4
 ----
 
