@@ -220,7 +220,7 @@ class Chart {
             return;
         }
 
-        var address = 'http://acm.timus.ru/author.aspx?id=' + judgeID;
+        var address = document.location.origin + '/author.aspx?id=' + judgeID;
         $.get(address, data => {
             var match = /<H2 CLASS="author_name">(<A HREF=".*?" TARGET="_blank">)?(.+?)(<\/A>)?<\/H2>/i.exec(data);
             if (match === null) {

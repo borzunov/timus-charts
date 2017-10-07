@@ -7,8 +7,9 @@
 // @icon         http://acm.timus.ru/favicon.ico
 // @downloadURL  https://openuserjs.org/install/hx0/Timus_Charts.user.js
 // @updateURL    https://openuserjs.org/install/hx0/Timus_Charts.user.js
-// @include      http://acm.timus.ru/author.aspx*
 // @match        http://acm.timus.ru/author.aspx*
+// @match        http://acm-judge.urfu.ru/author.aspx*
+// @match        http://timus.online/author.aspx*
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @require      http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js

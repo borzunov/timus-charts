@@ -36,7 +36,7 @@ class Submit {
     }
 
     queryWhetherConsidered (resultCallback, failCallback) {
-        var address = 'http://acm.timus.ru/problem.aspx?space=' +
+        var address = document.location.origin + '/problem.aspx?space=' +
                 this.space + '&num=' + this.problemNo;
         $.get(address, data => {
             var problemID = this.getProblemID();

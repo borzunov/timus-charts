@@ -8,7 +8,9 @@
         "128": "icon.png"
     },
     "permissions": [
-        "http://acm.timus.ru/author.aspx*"
+        "http://acm.timus.ru/author.aspx*",
+        "http://acm-judge.urfu.ru/author.aspx*",
+        "http://timus.online/author.aspx*"
     ],
     "content_scripts": [{
         "js": [
@@ -17,12 +19,10 @@
             "jqplot.dateAxisRenderer.min.js",
             "timus.user.js"
         ],
-        "include_globs": [
-            "http://acm.timus.ru/author.aspx*"
-        ],
-        "exclude_globs": [],
         "matches": [
-            "http://acm.timus.ru/author.aspx*"
+            "http://acm.timus.ru/author.aspx*",
+            "http://acm-judge.urfu.ru/author.aspx*",
+            "http://timus.online/author.aspx*"
         ],
         "run_at": "document_start"
     }]

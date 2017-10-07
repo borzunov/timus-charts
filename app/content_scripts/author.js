@@ -64,7 +64,7 @@ class Author {
     }
 
     getSubmitsPage (query, resultCallback, failCallback) {
-        var url = 'http://acm.timus.ru/textstatus.aspx' + query;
+        var url = document.location.origin + '/textstatus.aspx' + query;
         if (!this.hasDeletedProblems) {
             $.get(url, data => {
                 var expr = /<HTML>/i;
