@@ -10,6 +10,9 @@
 // @match        http://acm.timus.ru/author.aspx*
 // @match        http://acm-judge.urfu.ru/author.aspx*
 // @match        http://timus.online/author.aspx*
+// @match        https://acm.timus.ru/author.aspx*
+// @match        https://acm-judge.urfu.ru/author.aspx*
+// @match        https://timus.online/author.aspx*
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @require      http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js

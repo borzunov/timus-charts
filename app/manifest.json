@@ -10,7 +10,10 @@
     "permissions": [
         "http://acm.timus.ru/author.aspx*",
         "http://acm-judge.urfu.ru/author.aspx*",
-        "http://timus.online/author.aspx*"
+        "http://timus.online/author.aspx*",
+        "https://acm.timus.ru/author.aspx*",
+        "https://acm-judge.urfu.ru/author.aspx*",
+        "https://timus.online/author.aspx*"
     ],
     "content_scripts": [{
         "js": [
@@ -22,7 +25,10 @@
         "matches": [
             "http://acm.timus.ru/author.aspx*",
             "http://acm-judge.urfu.ru/author.aspx*",
-            "http://timus.online/author.aspx*"
+            "http://timus.online/author.aspx*",
+            "https://acm.timus.ru/author.aspx*",
+            "https://acm-judge.urfu.ru/author.aspx*",
+            "https://timus.online/author.aspx*"
         ],
         "run_at": "document_start"
     }]
