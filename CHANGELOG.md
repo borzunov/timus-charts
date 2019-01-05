@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.6
+----
+
+Support HTTPS versions of all the domains.
+
 v1.5
 ----
 
